@@ -1,28 +1,82 @@
 package com.ykwshowdown;
-import com.ykwshowdown.menu.HomeMenu;
+
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.*;
-import java.awt.*;
 
-import com.ykwshowdown.VisualSwing.*;
+import com.ykwshowdown.VisualSwing.JEcranRetour;
+import com.ykwshowdown.VisualSwing.JHomeMenu;
+import com.ykwshowdown.VisualSwing.JLogMenu;
 import com.ykwshowdown.VisualSwing.JTeamBuilder;
+import com.ykwshowdown.chat.Message;
+import com.ykwshowdown.chat.ModeleChat;
+import com.ykwshowdown.controleurs.ControleurLogin;
+import com.ykwshowdown.controleurs.ControleurMenu;
+import com.ykwshowdown.menu.HomeMenu;
+import com.ykwshowdown.reseau.ConnexionServeur;
 
 public class Main {
-	private static CardLayout cardLayout;
-    private static JPanel mainPanel;
-	
-	public static void main(String[] args) {
-        HomeMenu hm = new HomeMenu();
-        JHomeMenu jhm = new JHomeMenu(hm);
-        
-        JTeamBuilder jt= new JTeamBuilder();
-        
-        JFrame frame = new JFrame("YKW Showdown");
-        frame.add(jt);
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(screenSize);
 
+    private static final String HOTE = "localhost";
+    private static final int PORT = 5001;
+
+    public static void main(String[] args) {
+
+        ConnexionServeur serveur;
+        try {
+            serveur = new ConnexionServeur(HOTE, PORT);
+        } catch (IOException e) {
+            System.out.println("Serveur injoignable (" + e.getMessage() + ") : mode hors ligne");
+            serveur = null;
+        }
+
+        final ConnexionServeur s = serveur;
+        SwingUtilities.invokeLater(() -> lancer(s));
+    }
+
+    private static void lancer(ConnexionServeur serveur) {
+        // --- Modeles ---
+        ModeleChat modeleChat = new ModeleChat(serveur);
+        modeleChat.ajouter(Message.maintenant("Systeme", "Bienvenue sur YKW Showdown !"));
+
+        // --- Vues ---
+        JLogMenu login = new JLogMenu();
+        JHomeMenu menu = new JHomeMenu(new HomeMenu(), modeleChat);
+        JEcranRetour ecranEquipes = new JEcranRetour("Modifier les equipes", new JTeamBuilder());
+
+        JLabel bientot = new JLabel("Ecran de combat : a venir", SwingConstants.CENTER);
+        bientot.setFont(new Font("Verdana", Font.BOLD, 20));
+        JEcranRetour ecranCombat = new JEcranRetour("Combat", bientot);
+
+        // --- Navigation par cartes ---
+        CardLayout cartes = new CardLayout();
+        JPanel conteneur = new JPanel(cartes);
+        conteneur.add(login, ControleurMenu.CARTE_LOGSIGN);
+        conteneur.add(menu, ControleurMenu.CARTE_MENU);
+        conteneur.add(ecranEquipes, ControleurMenu.CARTE_EQUIPES);
+        conteneur.add(ecranCombat, ControleurMenu.CARTE_COMBAT);
+
+        // --- Controleurs ---
+        ControleurMenu ctrlMenu = new ControleurMenu(cartes, conteneur, menu, modeleChat, ecranEquipes, ecranCombat, "Invite");
+        new ControleurLogin(login, ctrlMenu, serveur);
+
+        // --- Fenetre ---
+        JFrame frame = new JFrame("YKW Showdown");
+        frame.setContentPane(conteneur);
+        frame.setSize(1200, 750);
+        frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (serveur != null) {
+                    serveur.fermer();
+                }
+            }
+        });
         frame.setVisible(true);
     }
 }

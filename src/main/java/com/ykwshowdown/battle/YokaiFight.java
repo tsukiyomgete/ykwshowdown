@@ -32,6 +32,8 @@ public class YokaiFight {
     private float _adjacentBoost;
     private float _inspiritBoost;
 
+    // TODO : champs a ajouter pour le combat : attente (file des tours), jaugeAme, envoutement + toursRestants,
+    //        resistances[6], tribu, niveaux de bonus/malus (-8..+8) pour For/Esp/Def/Vit, garde (boolean)
     private int _team;
 
     public YokaiFight(String nomYokai, String surnomYokai, int pv, int atk, int spr, int def, int spe, int team) {
@@ -84,18 +86,9 @@ public class YokaiFight {
     }
 
     public void attack(YokaiFight target) {
-        int damage = 40;
-        if (target._hpT < damage) {
-            target._hpT = 0;
-        } else {
-            target._hpT -= 40;
-        }
-        System.out.println(this._nomYokai + " a infligé " + damage + " au " + target._nomYokai + " enemie !");
-        try {
-            Thread.sleep(1200);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // TODO : toucher ou rater (algo 3), critique (algo 3), puis degats avec calcul.calculateDamage (algo 4)
+        // TODO : appliquer les degats a target._hpC (et pas _hpT), PV minimum 0
+        // TODO : faire gagner 5 points de jauge d'ame a tous les Yo-kai sur le terrain a la fin de l'action (algo 6)
     }
 
     public Talent getTalent() {

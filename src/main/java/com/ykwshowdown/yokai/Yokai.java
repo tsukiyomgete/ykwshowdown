@@ -20,6 +20,7 @@ public class Yokai {
     @SerializedName("idMedaillum")
     int idMedallium;
 
+    // TODO : ces 4 probabilites sont dans le CSV (prob_attaque, prob_technique, prob_inspirit, prob_garde), en %
     double _baseAttackPerC;
     double _baseTechniquePerC;
     double _baseInspiritPerC;
@@ -33,6 +34,7 @@ public class Yokai {
     int statBId;
     Stat statEnd;
 
+    // TODO : ajouter l'Ultimate (CSV : ulti_*) avec sa formule (attaque ou technique), son cout en ame et son nombre de coups
     @SerializedName("technique")
     Technique technique;
 
@@ -41,6 +43,8 @@ public class Yokai {
     @SerializedName("talent")
     String talent;
 
+    // TODO : remplacer faiblesse + resistance par un tableau double[6] (feu, glace, terre, foudre, eau, vent)
+    //        rempli depuis le CSV (colonnes res_feu ... res_vent) : certains Yo-kai ont 2 faiblesses ou 2 resistances
     @SerializedName("faiblesseElementaire")
     Elemental weakness;
     @SerializedName("faiblesseMultipliers")

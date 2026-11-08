@@ -11,26 +11,26 @@ public class JTeamBuilder extends JPanel{
 	
 	public JTeamBuilder() {
         
-        setBackground(new Color(240, 235, 245)); // Teinte violet clair/blanche de fond
+        setBackground(new Color(240, 235, 245));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setBorder(new EmptyBorder(20, 20, 20, 20)); // Marges intérieures
+        setBorder(new EmptyBorder(20, 20, 20, 20));
 
 
-        // --- SECTION 2 : En-tête "All teams" et boutons d'action ---
+
         JLabel lblAllTeams = new JLabel("All teams (2)");
         lblAllTeams.setFont(new Font("Arial", Font.BOLD, 20));
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         actionPanel.setOpaque(false);
         JButton btnNewTeam = new JButton("⊕ New Team");
-        JButton btnNewBox = new JButton("\uD83D\uDCD5 New Box"); // Icône box textuelle
+        JButton btnNewBox = new JButton("\uD83D\uDCD5 New Box");
         JTextField txtSearch = new JTextField(15);
         txtSearch.setToolTipText("search teams");
         actionPanel.add(btnNewTeam);
         actionPanel.add(btnNewBox);
         actionPanel.add(txtSearch);
 
-        // --- SECTION 3 : Liste des équipes (Les encadrés) ---
+
         JPanel teamsListPanel = new JPanel();
         teamsListPanel.setLayout(new BoxLayout(teamsListPanel, BoxLayout.Y_AXIS));
         teamsListPanel.setOpaque(false);
@@ -42,16 +42,16 @@ public class JTeamBuilder extends JPanel{
         JPanel team2 = createTeamRow("[gen9nu] Untitled 1", "Altaria");
 
         teamsListPanel.add(team1);
-        teamsListPanel.add(Box.createVerticalStrut(10)); // Espace entre les équipes
+        teamsListPanel.add(Box.createVerticalStrut(10));
         teamsListPanel.add(team2);
 
-        // --- SECTION 4 : Messages d'avertissement (Cookies / localStorage) ---
+
         JPanel warningPanel = new JPanel();
         warningPanel.setLayout(new BoxLayout(warningPanel, BoxLayout.Y_AXIS));
         warningPanel.setOpaque(false);
         warningPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
-        // Utilisation de HTML dans le JLabel pour gérer le gras et les retours à la ligne comme en CSS
+
 
         
 

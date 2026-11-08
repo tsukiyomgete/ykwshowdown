@@ -60,42 +60,17 @@ public class Battle {
     }
 
     public void SetOrderingBattle() {
-        int compte = 0;
-        orderBattle = new YokaiTeam(player1.getFrontRowSize() + player2.getFrontRowSize());
-        for (int i = 0; i < player1.getFrontRowSize(); i++) {
-            orderBattle.setYokaiIndex(i, player1.getYokaiFrontRowIndex(i));
-        }
-        for (int j = player1.getFrontRowSize(); j < player1.getFrontRowSize() + player2.getFrontRowSize(); j++) {
-            orderBattle.setYokaiIndex(j, player2.getYokaiFrontRowIndex(compte));
-            compte++;
-        }
+        // TODO : remplacer par une file d'attente (algo 5 "Ordre des tours") :
+        //        au debut, chaque Yo-kai de devant recoit une attente aleatoire tiree de la table de vitesse
     }
 
     public void triInsertionOrderingBattle(YokaiTeam yt) {
-        for (int i = 1; i < yt.getFrontRowSize(); i++) {
-            YokaiFight y = yt.getYokaiFrontRowIndex(i);
-            int j = i - 1;
-
-            while (j >= 0 && yt.getYokaiFrontRowIndex(j).getSPEC() < y.getSPEC()) {
-                yt.setYokaiIndex(j + 1, yt.getYokaiFrontRowIndex(j));
-                j--;
-            }
-
-            yt.setYokaiIndex(j + 1, y);
-        }
+        // TODO : plus besoin de trier par vitesse a chaque tour : c'est la plus petite attente qui joue (PriorityQueue)
     }
 
     public void attackTurn() {
-        for (int i = 0; i < orderBattle.getFrontRowSize(); i++) {
-            if (orderBattle.getYokaiFrontRowIndex(i).getTeam() == player1.getTeamNumber()) {
-                YokaiFight target = getRandTarget(YokaiAlive(player2));
-                orderBattle.getYokaiFrontRowIndex(i).attack(target);
-            }
-            if (orderBattle.getYokaiFrontRowIndex(i).getTeam() == player2.getTeamNumber()) {
-                YokaiFight target = getRandTarget(YokaiAlive(player1));
-                orderBattle.getYokaiFrontRowIndex(i).attack(target);
-            }
-        }
+        // TODO : boucle du jeu (algo 5) : prendre le Yo-kai avec la plus petite attente, retirer son attente a tous les autres,
+        //        le faire agir (algo 7 "IA"), puis lui donner une nouvelle attente = attente(Vitesse) * 3
     }
 
     public YokaiFight getRandTarget(YokaiTeam enemyTeam) {
@@ -165,6 +140,8 @@ public class Battle {
         return true;
     }
 
+    // TODO : apres une rotation, les Yo-kai qui arrivent devant recoivent une attente pleine (attente(Vitesse) * 3)
+    // TODO : recalculer le bonus de tribu apres chaque rotation (algo 8)
     public void tournerRoue(YokaiTeam yt, boolean droite, int nbCrans) {
         YokaiFight[] roue = new YokaiFight[6]; // tableau temporaire
         for (int i = 0; i < yt.getFrontRowSize(); i++) {

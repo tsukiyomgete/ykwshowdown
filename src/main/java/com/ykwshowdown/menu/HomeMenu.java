@@ -122,14 +122,7 @@ public class HomeMenu {
         return new User(strUser, strMdp);
     }
 
-    public void customCMD() {
-        try {
-			DataBase.createInspirit();
-		} catch(SQLException e){
-			System.out.println("Erreur de connexion à la base de données : " + e.getMessage());
-		}
-        Init.insererLesInspirits();
-    }
+
 
     public void delBaseDeDonnee() {
     }

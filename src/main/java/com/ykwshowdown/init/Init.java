@@ -42,6 +42,9 @@ public class Init {
 	public static Rank A = new Rank('A');
 	public static Rank S = new Rank('S');
 
+	// TODO : toutes les donnees en dur ci-dessous (techniques, attaques, inspirits, statA/statB, Yo-kai)
+	//        sont a remplacer par l'import du CSV extrait du jeu (YKW2/tables/yokai_ykw2.csv, 542 Yo-kai).
+	//        Elles sont gardees pour l'instant pour que la base continue de se remplir.
 	// === TECHNIQUES ===
 	static Technique[] ListTechnique = {
 		new Technique(1, "Absorb", 20,90, 1, Drain),
@@ -1744,72 +1747,56 @@ public class Init {
 
 	// === METHODES D'INSERTION ===
 	public static void insererTribe(Tribe tribu) {
-		try { DataBase.insertTribe(tribu); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererElement(Elemental element) {
-		try { DataBase.insertElemental(element); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererRang(Rank rang) {
-		try { DataBase.insertRank(rang); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererTier(Tier tier) {
-		try { DataBase.insertTier(tier); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererStatA(Stat statA) {
-		try { DataBase.insertStatA(statA); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererStatB(Stat statB) {
-		try { DataBase.insertStatB(statB); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererTechnique(Technique technique) {
-		try { DataBase.insertTechnique(technique); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererAttack(PhysicalAttack atk) {
-		try { DataBase.insertAttack(atk); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererInspirit(Inspirit inspirit) {
-		try { DataBase.insertInspirit(inspirit); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererYokai(Yokai yT) {
-		try { DataBase.insertYokai(yT); } catch (SQLException e) {
-			System.out.println("Erreur DB : " + e.getMessage());
-		}
+
 	}
 
 	public static void insererLesElements() {
+		/*
 		insererElement(Neutral); insererElement(Fire); insererElement(Water);
 		insererElement(Wind); insererElement(Ice); insererElement(Earth);
 		insererElement(Thunder); insererElement(Heal); insererElement(Drain);
+		*/
+
 	}
 
 	public static void insererLesTribus() {
+		/*
 		insererTribe(Brave);
 		insererTribe(Mysterious);
 		insererTribe(Tough);
@@ -1821,6 +1808,8 @@ public class Init {
 		insererTribe(Wicked);
 		insererTribe(Enma);
 		insererTribe(Wandroid);
+		*/
+
 	}
 
 	public static void insererLesRangs() {

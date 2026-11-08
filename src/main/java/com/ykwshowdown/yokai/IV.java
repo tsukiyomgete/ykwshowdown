@@ -4,6 +4,8 @@ import com.ykwshowdown.init.*;
 import java.util.Scanner;
 
 public class IV {
+    // TODO : regles du jeu : 40 points au total, les PV comptent pour moitie (HP/2 + STR + SPR + DEF + SPE <= 40),
+    //        aucune limite de 15 par stat dans le jeu, et on stocke la vraie valeur (pas HP/2)
     final int MAXIVPOINTS = 40;
     final int MAXIV = 15;
     final int MINIV = 0;
@@ -31,21 +33,8 @@ public class IV {
     }
 
     public void GenerateIV() {
-        int total = MAXIVPOINTS;
-        this.HP = calcul.randomGenerate(30);
-        total -= this.HP;
-
-        this.STR = calcul.randomGenerate(calcul.min(MAXIV, total));
-        total -= this.STR;
-
-        this.SPR = calcul.randomGenerate(calcul.min(MAXIV, total));
-        total -= this.SPR;
-
-        this.DEF = calcul.randomGenerate(calcul.min(MAXIV, total));
-        total -= this.DEF;
-
-        this.SPE = calcul.randomGenerate(calcul.min(MAXIV, total));
-        total -= this.SPE;
+        // TODO : generation du jeu (algo 1) : 40 tirages, chaque tirage choisit une stat au hasard parmi 5,
+        //        +2 si c'est les PV, +1 sinon
     }
 
     public void setIV() {
@@ -108,51 +97,7 @@ public class IV {
     }
 
     public void setIV(int hp, int str, int spr, int def, int spe) {
-        int total = MAXIVPOINTS;
-        // hp
-        
-        if (hp< MINIV || hp > 30 || hp > total)
-        {
-            System.out.println("Valeur de pv invalide !");
-            return;
-        }
-        total -= hp/2;
-        HP = hp / 2;
-
-        // Strength
-        if (str< MINIV || str > MAXIV || str > total)
-        {
-            System.out.println("Valeur de Strength invalide !");
-            return;
-        }        
-        total -= str/2;
-        STR = str;
-
-        //Spirit
-        if (spr< MINIV || spr > MAXIV || spr > total)
-        {
-            System.out.println("Valeur de Strength invalide !");
-            return;
-        }        
-        total -= spr/2;
-        SPR = spr;
-
-        // Defense
-        if (def< MINIV || def > MAXIV || def > total)
-        {
-            System.out.println("Valeur de Strength invalide !");
-            return;
-        }        
-        total -= def/2;
-        DEF = def;
-
-        if (spe< MINIV || spe > MAXIV || spe > total)
-        {
-            System.out.println("Valeur de Strength invalide !");
-            return;
-        }        
-        total -= spe/2;
-        SPE = spe;
+        // TODO : verifier HP/2 + str + spr + def + spe <= 40 et aucune valeur negative, puis stocker les valeurs telles quelles
     }
 
     public void print() {

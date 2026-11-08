@@ -21,7 +21,7 @@ public class JFrameCard extends JFrame implements ActionListener{
 		card = new CardLayout();
 		this.getContentPane().setLayout(card);
 		HomeMenu hm = new HomeMenu();
-        JHomeMenu jhm = new JHomeMenu(hm);
+        JHomeMenu jhm = new JHomeMenu(hm, new com.ykwshowdown.chat.ModeleChat(null));
         
 	}
 	
