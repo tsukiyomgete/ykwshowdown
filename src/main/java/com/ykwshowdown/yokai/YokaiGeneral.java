@@ -175,16 +175,16 @@ public class YokaiGeneral {
         return yokai.GetTribe();
     }
 
-    public Technique GetTechnique() {
-        return yokai.GetTechnique();
+    public int GetTechniqueId() {
+        return yokai.getTechniqueId();
     }
 
-    public String GetElementWeak() {
-        return yokai.GetWkElementString();
+    public int GetAttackId() {
+        return yokai.getAttackId();
     }
 
-    public String GetElementRes() {
-        return yokai.GetResElementString();
+    public double[] GetResistances() {
+        return yokai.getResistances();
     }
 
     public Attitude GetAttitude() {

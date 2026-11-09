@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.swing.*;
 
@@ -20,8 +21,28 @@ import com.ykwshowdown.reseau.ConnexionServeur;
 
 public class Main {
 
-    private static final String HOTE = "localhost";
+    private static final String HOTE = "185.157.247.30";
     private static final int PORT = 5001;
+
+    private static java.util.List<Image> iconesCarrees(Image source, double zoom) {
+        java.util.List<Image> icones = new java.util.ArrayList<>();
+        int w = source.getWidth(null), h = source.getHeight(null);
+
+        for (int taille : new int[]{16, 24, 32, 48, 64, 128, 256}) {
+            java.awt.image.BufferedImage carre =
+                    new java.awt.image.BufferedImage(taille, taille, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = carre.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+            double echelle = Math.min((double) taille / w, (double) taille / h) * zoom;
+            int nw = (int) (w * echelle), nh = (int) (h * echelle);
+            g.drawImage(source, (taille - nw) / 2, (taille - nh) / 2, nw, nh, null);
+            g.dispose();
+            icones.add(carre);
+        }
+        return icones;
+    }
 
     public static void main(String[] args) {
 
@@ -62,13 +83,19 @@ public class Main {
         // --- Controleurs ---
         ControleurMenu ctrlMenu = new ControleurMenu(cartes, conteneur, menu, modeleChat, ecranEquipes, ecranCombat, "Invite");
         new ControleurLogin(login, ctrlMenu, serveur);
+        if (serveur != null) {
+            serveur.envoyer("/data/all");
+        }
 
+
+        ImageIcon icon = new ImageIcon("src/asset/gameIcon/icon.png");
         // --- Fenetre ---
         JFrame frame = new JFrame("YKW Showdown");
         frame.setContentPane(conteneur);
         frame.setSize(1200, 750);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -77,6 +104,7 @@ public class Main {
                 }
             }
         });
+        frame.setIconImages(iconesCarrees(icon.getImage(), 1.08));
         frame.setVisible(true);
     }
 }

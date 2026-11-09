@@ -67,7 +67,14 @@ public class ControleurMenu implements ActionListener, EcouteurServeur {
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
         if (cmd.equals(JHomeMenu.ACTION_COMBAT)) {
-            cartes.show(conteneur, CARTE_COMBAT);
+            if(!menu.getBattleStatus()){
+                System.out.println("Envoi de requete matchmaking");
+                menu.changeBattleButtonSearching();
+            } else if(menu.getBattleStatus()){
+                System.out.println("Annulation de requete matchmaking");
+                menu.changeBattleButtonClassic();
+            }
+            //cartes.show(conteneur, CARTE_COMBAT);
         } else if (cmd.equals(JHomeMenu.ACTION_EQUIPES)) {
             cartes.show(conteneur, CARTE_EQUIPES);
         } else if (cmd.equals(JEcranRetour.ACTION_RETOUR)) {

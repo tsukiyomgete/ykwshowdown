@@ -9,7 +9,9 @@ import javax.swing.border.EmptyBorder;
 
 public class JTeamBuilder extends JPanel{
 	
-	public JTeamBuilder() {
+	public static final String ACTION_CREE_EQUIPE = "CREATE_TEAM";
+
+    public JTeamBuilder() {
         
         setBackground(new Color(240, 235, 245));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -29,6 +31,7 @@ public class JTeamBuilder extends JPanel{
         actionPanel.add(btnNewTeam);
         actionPanel.add(btnNewBox);
         actionPanel.add(txtSearch);
+        actionPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, actionPanel.getPreferredSize().height));
 
 
         JPanel teamsListPanel = new JPanel();
@@ -44,6 +47,7 @@ public class JTeamBuilder extends JPanel{
         teamsListPanel.add(team1);
         teamsListPanel.add(Box.createVerticalStrut(10));
         teamsListPanel.add(team2);
+        teamsListPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
 
         JPanel warningPanel = new JPanel();
@@ -52,18 +56,20 @@ public class JTeamBuilder extends JPanel{
         warningPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
 
 
-
+        lblAllTeams.setAlignmentX(Component.LEFT_ALIGNMENT);
+        actionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        teamsListPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
 
+        btnNewTeam.setActionCommand(ACTION_CREE_EQUIPE);
 
-        // --- AJOUT DE TOUS LES COMPOSANTS AU PANNEAU PRINCIPAL ---
         add(Box.createVerticalStrut(5));
         add(Box.createVerticalStrut(15));
         add(lblAllTeams);
         add(actionPanel);
         add(Box.createVerticalStrut(10));
         add(teamsListPanel);
-        add(Box.createVerticalStrut(10));
+        add(Box.createVerticalGlue());
     }
 	
 	private JPanel createTeamRow(String teamName, String pokemonList) {

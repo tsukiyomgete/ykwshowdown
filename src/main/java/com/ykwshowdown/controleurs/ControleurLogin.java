@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import com.ykwshowdown.VisualSwing.JLogMenu;
+import com.ykwshowdown.database.DataBase;
 import com.ykwshowdown.reseau.ConnexionServeur;
 import com.ykwshowdown.reseau.EcouteurServeur;
 
@@ -82,6 +83,16 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
 
 
     public void messageRecu(String ligne) {
+        if (ligne.startsWith("/data/")) {
+            DataBase.loadServerData(ligne.substring("/data/".length()));
+            vue.setMessage("Donnees chargees");
+            return;
+        }
+        if (ligne.equals("/error/data")) {
+            vue.setMessage("Le serveur n'a pas pu charger les donnees");
+            return;
+        }
+
         requeteEnCours = false;
         switch (ligne) {
             case "/success/login":
@@ -101,6 +112,8 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
             case "/error/deconnecte":
                 vue.setMessage("Connexion au serveur perdue");
                 break;
+            case "/error/ipbanil":
+                vue.setMessage("Connexion refusé (Localisation en Israël)");
             default:
                 vue.setMessage("Reponse inattendue du serveur : " + ligne);
         }

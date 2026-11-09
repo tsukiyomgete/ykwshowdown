@@ -17,6 +17,7 @@ public class JHomeMenu extends JPanel {
 
     public static final String ACTION_COMBAT  = "MENU_COMBAT";
     public static final String ACTION_EQUIPES = "MENU_EQUIPES";
+    private boolean isSearching = false;
 
     static final Font VERDANA = new Font("Verdana", Font.PLAIN, 14);
 
@@ -76,6 +77,20 @@ public class JHomeMenu extends JPanel {
         teamButton.addActionListener(ecouteur);
         chat.setEcouteur(ecouteur);
     }
+
+    public void changeBattleButtonSearching() {
+        battleButton.changerStyle("Searching...", null, 0xEEEEEE, 0xEEEEEE, 0xCCCCCC, new Color(0x999999));
+        battleButton.setCursor(Cursor.getDefaultCursor());
+        isSearching = true;
+    }
+
+    public void changeBattleButtonClassic() {
+        battleButton.changerStyle("Combat !", "Trouver un adversaire", 0xC987B8, 0xA84D96, 0x823B74, Color.WHITE);
+        battleButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        isSearching = false;
+    }
+
+    public boolean getBattleStatus(){ return isSearching;}
 
     public JChatPanel getChat() {
         return chat;

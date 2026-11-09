@@ -2,23 +2,24 @@ package com.ykwshowdown.yokai;
 
 public class Equipement{
      int IdEquipement;
+     String rankEquipment;
      int BaseHP;
      int BaseSTR;
      int BaseSPR;
      int BaseDEF;
      int BaseSPE;
-    public boolean IsFusable;
-    public boolean IsHoldable;
+     String effectEquipment;
 
-    public Equipement(int IdEquipement, int BaseHP, int BaseSTR, int BaseSPR, int BaseDEF, int BaseSPE, boolean IsFusable, boolean IsHoldable) {
+
+    public Equipement(int IdEquipement, String rank,int BaseHP, int BaseSTR, int BaseSPR, int BaseDEF, int BaseSPE, String effectEquipment) {
         this.IdEquipement = IdEquipement;
+        this.rankEquipment = rank;
         this.BaseHP = BaseHP;
         this.BaseSTR = BaseSTR;
         this.BaseSPR = BaseSPR;
         this.BaseDEF = BaseDEF;
         this.BaseSPE = BaseSPE;
-        this.IsFusable = IsFusable;
-        this.IsHoldable = IsHoldable;
+        this.effectEquipment = effectEquipment;
     }
 
     public int GetHP()

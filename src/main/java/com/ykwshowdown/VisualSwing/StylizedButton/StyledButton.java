@@ -23,6 +23,18 @@ public class StyledButton extends JButton {
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(160, 55));
     }
+    public void changerStyle(String text, String textDesc, int topHex, int bottomHex, int borderHex, Color couleurTexte) {
+        this.topHex = topHex;
+        this.bottomHex = bottomHex;
+        this.borderHex = borderHex;
+        String desc = "";
+        if (textDesc != null) {
+            desc = "<small>" + textDesc + "</small>";
+        }
+        setText("<html><div style='text-align: center;'><strong> " + text + "</strong><br>" + desc + "</div></html>");
+        setForeground(couleurTexte);
+        repaint();
+    }
 
     public StyledButton(String text, String textDesc ,int topHex, int bottomHex, int borderHex) {
         super("<html><div style='text-align: center;'><strong> "+ text +"</strong><br><small>" + textDesc + "</small></div></html>");

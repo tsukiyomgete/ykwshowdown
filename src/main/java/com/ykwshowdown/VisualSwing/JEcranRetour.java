@@ -18,7 +18,7 @@ public class JEcranRetour extends JPanel {
     public JEcranRetour(String titre, JComponent contenu) {
         setLayout(new BorderLayout());
 
-        boutonRetour = new JButton("← Retour au menu");
+        boutonRetour = new JButton("← Retour");
         boutonRetour.setActionCommand(ACTION_RETOUR);
         boutonRetour.setFocusPainted(false);
 

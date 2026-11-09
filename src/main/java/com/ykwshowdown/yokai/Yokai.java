@@ -1,99 +1,84 @@
 package com.ykwshowdown.yokai;
 
-import com.google.gson.annotations.SerializedName;
-import com.ykwshowdown.fightingdata.*;
-
+/**
+ * Le yokai de base, son équivalent est le species dans la bdd
+ *
+ */
 public class Yokai {
 
-    @SerializedName("nomYokai")
+
+    public static final int FIRE = 0;
+    public static final int ICE = 1;
+    public static final int EARTH = 2;
+    public static final int LIGHTNING = 3;
+    public static final int WATER = 4;
+    public static final int WIND = 5;
+
+    int id;
     String nom;
-    @SerializedName("rangYokai")
-    Rank rangYokai;
-    @SerializedName("tierYokai")
-    Tier yokaiTier;
+    char rangYokai;
+    String tribuYokai;
 
-    face_icon faceYoKai;
-
-    boolean isLegendary;
-    @SerializedName("nomTribu")
-    Tribe tribuYokai;
-    @SerializedName("idMedaillum")
-    int idMedallium;
-
-    // TODO : ces 4 probabilites sont dans le CSV (prob_attaque, prob_technique, prob_inspirit, prob_garde), en %
-    double _baseAttackPerC;
-    double _baseTechniquePerC;
-    double _baseInspiritPerC;
-    double _baseGuardPerC;
-
-    @SerializedName("statA")
-    int statAId;
     Stat statInit;
-
-    @SerializedName("statB")
-    int statBId;
     Stat statEnd;
 
-    // TODO : ajouter l'Ultimate (CSV : ulti_*) avec sa formule (attaque ou technique), son cout en ame et son nombre de coups
-    @SerializedName("technique")
-    Technique technique;
+    double[] resistances;   //Array des resistances
 
-    PhysicalAttack attack;
+    int attackId;
+    int techniqueId;
+    Integer inspiritId;     // null possible
+    Integer ultimateId;     // null possible
 
-    @SerializedName("talent")
+
+    int _baseAttackPerC;
+    int _baseTechniquePerC;
+    int _baseInspiritPerC;
+    int _baseGuardPerC;
+
+    // Hors base de donnees
+    Tier yokaiTier;
+    face_icon faceYoKai;
+    boolean isLegendary;
     String talent;
-
-    // TODO : remplacer faiblesse + resistance par un tableau double[6] (feu, glace, terre, foudre, eau, vent)
-    //        rempli depuis le CSV (colonnes res_feu ... res_vent) : certains Yo-kai ont 2 faiblesses ou 2 resistances
-    @SerializedName("faiblesseElementaire")
-    Elemental weakness;
-    @SerializedName("faiblesseMultipliers")
-    double weakMultipliers;
-
-    @SerializedName("resistanceElementaire")
-    Elemental resistance;
-    @SerializedName("resistanceMultipliers")
-    double resMultipliers;
-
-    Inspirit inspiritYokai;
-
     double chanceOfBeingInspirited;
 
-    public Equipement[] HoldingEquipement;
+    public Yokai(int id, String nom, char rang, String tribu,
+            Stat statMin, Stat statMax,
+            double[] resistances,
+            int attackId, int techniqueId, Integer inspiritId, Integer ultimateId,
+            int probAttack, int probTechnique, int probInspirit, int probGuard) {
+        this.id = id;
+        this.nom = nom;
+        this.rangYokai = rang;
+        this.tribuYokai = tribu;
+        this.statInit = statMin;
+        this.statEnd = statMax;
+        this.resistances = resistances;
+        this.attackId = attackId;
+        this.techniqueId = techniqueId;
+        this.inspiritId = inspiritId;
+        this.ultimateId = ultimateId;
+        this._baseAttackPerC = probAttack;
+        this._baseTechniquePerC = probTechnique;
+        this._baseInspiritPerC = probInspirit;
+        this._baseGuardPerC = probGuard;
+        this.yokaiTier = Tier.NU;
+    }
 
-    public Yokai(String nom, int idMedallium, Rank rangYokai, Tribe tribuYokai, boolean isLegendary,
-            Stat statA, Stat statB,                          // ← AJOUTER CES DEUX LIGNES
-            PhysicalAttack attack, Technique tech, String talent, Inspirit inspirit,
-            Elemental weak, double wkMultipliers, Elemental rest, double resMultipliers,
-            double baseAtk, double baseTech, double baseInspirit, double baseGuard,
-            double chanceInspirited, int maxItem) 
-{
-    this.nom = nom;
-    this.idMedallium = idMedallium;
-    this.rangYokai = rangYokai;
-    this.tribuYokai = tribuYokai;
-    this.isLegendary = isLegendary;
-    this.statInit = statA;                // ← AJOUTER
-    this.statEnd = statB;                // ← AJOUTER
-    this.yokaiTier = Tier.NU;
-    this.attack = attack;
-    this.technique = tech;
-    this.talent = talent;
-    this.inspiritYokai = inspirit;
-    this.weakness = weak;
-    this.weakMultipliers = wkMultipliers;
-    this.resistance = rest;
-    this.resMultipliers = resMultipliers;
-    this._baseAttackPerC = baseAtk;
-    this._baseTechniquePerC = baseTech;
-    this._baseInspiritPerC = baseInspirit;
-    this._baseGuardPerC = baseGuard;
-    this.chanceOfBeingInspirited = chanceInspirited;
-    this.HoldingEquipement = new Equipement[maxItem];
-}
+    public int GetID() {
+        return id;
+    }
 
     public String GetName() {
         return nom;
+    }
+
+    public char GetRank() {
+        return rangYokai;
+    }
+
+    public String GetTribe() {
+        return tribuYokai;
     }
 
     public String GetTierString() {
@@ -102,42 +87,6 @@ public class Yokai {
 
     public Tier GetTier() {
         return yokaiTier;
-    }
-
-    public char GetRank() {
-        return rangYokai.GetRank();
-    }
-
-    public int GetID() {
-        return idMedallium;
-    }
-
-    public String GetTribe() {
-        return tribuYokai.GetTribe();
-    }
-
-    public Technique GetTechnique() {
-        return technique;
-    }
-
-    public String GetWkElementString() {
-        return weakness.getElement();
-    }
-
-    public String GetWkElement() {
-        return weakness.getElement();
-    }
-
-    public String GetResElementString() {
-        return resistance.getElement();
-    }
-
-    public int getStatAId() {
-        return statAId;
-    }
-
-    public int getStatBId() {
-        return statBId;
     }
 
     public Stat getStatA() {
@@ -156,48 +105,52 @@ public class Yokai {
         statEnd = sB;
     }
 
+    public double[] getResistances() {
+        return resistances;
+    }
+
+    /** element = Yokai.FIRE, Yokai.ICE, ... */
+    public double getResistance(int element) {
+        return resistances[element];
+    }
+
+    public int getAttackId() {
+        return attackId;
+    }
+
+    public int getTechniqueId() {
+        return techniqueId;
+    }
+
+    public Integer getInspiritId() {
+        return inspiritId;
+    }
+
+    public Integer getUltimateId() {
+        return ultimateId;
+    }
+
+    public int getBaseAttackPerC() {
+        return _baseAttackPerC;
+    }
+
+    public int getBaseTechniquePerC() {
+        return _baseTechniquePerC;
+    }
+
+    public int getBaseInspiritPerC() {
+        return _baseInspiritPerC;
+    }
+
+    public int getBaseGuardPerC() {
+        return _baseGuardPerC;
+    }
+
     public String getTalent() {
-    return talent;
-}
+        return talent;
+    }
 
-public double getWeakMultipliers() {
-    return weakMultipliers;
-}
-
-public double getResMultipliers() {
-    return resMultipliers;
-}
-
-public PhysicalAttack getAttack() {
-    return attack;
-}
-
-public Inspirit getInspirit() {
-    return inspiritYokai;
-}
-
-public double getBaseAttackPerC() {
-    return _baseAttackPerC;
-}
-
-public double getBaseTechniquePerC() {
-    return _baseTechniquePerC;
-}
-
-public double getBaseInspiritPerC() {
-    return _baseInspiritPerC;
-}
-
-public double getBaseGuardPerC() {
-    return _baseGuardPerC;
-}
-
-public double getChanceInspirited() {
-    return chanceOfBeingInspirited;
-}
-
-public int getMaxItem() {
-    return HoldingEquipement.length;
-}
-
+    public double getChanceInspirited() {
+        return chanceOfBeingInspirited;
+    }
 }

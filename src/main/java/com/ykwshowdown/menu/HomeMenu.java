@@ -9,7 +9,6 @@ import com.ykwshowdown.battle.Battle;
 import com.ykwshowdown.battle.YokaiFight;
 import com.ykwshowdown.battle.YokaiTeam;
 import com.ykwshowdown.database.DataBase;
-import com.ykwshowdown.init.Init;
 import com.ykwshowdown.init.calcul;
 import com.ykwshowdown.user.User;
 import com.ykwshowdown.yokai.YokaiGeneral;

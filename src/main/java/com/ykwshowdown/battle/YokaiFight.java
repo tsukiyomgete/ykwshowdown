@@ -8,9 +8,9 @@ public class YokaiFight {
     private String _nomYokai;
     private String _surnomYokai;
 
-    private String _elementWeak;
-    private String _elementRes;
-    private Technique _technique;
+    private double[] _resistances;   // feu, glace, terre, foudre, eau, vent
+    private int _attackId;
+    private int _techniqueId;
     private Talent _talent;
 
     private int _hpT;
@@ -65,9 +65,9 @@ public class YokaiFight {
         _defC = yg.GetDEF();
         _speC = yg.GetSPE();
 
-        _elementWeak = yg.GetElementWeak();
-        _elementRes = yg.GetElementRes();
-        _technique = yg.GetTechnique();
+        _resistances = yg.GetResistances();
+        _attackId = yg.GetAttackId();
+        _techniqueId = yg.GetTechniqueId();
 
         _team = team;
     }
@@ -99,16 +99,16 @@ public class YokaiFight {
         this._talent = talent;
     }
 
-    public String getWeak() {
-        return _elementWeak;
+    public double[] getResistances() {
+        return _resistances;
     }
 
-    public String getRes() {
-        return _elementRes;
+    public int getAttackId() {
+        return _attackId;
     }
 
-    public Technique getTechnique() {
-        return _technique;
+    public int getTechniqueId() {
+        return _techniqueId;
     }
 
     public int getHPC() {
