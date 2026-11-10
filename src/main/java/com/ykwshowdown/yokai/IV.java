@@ -1,14 +1,19 @@
 package com.ykwshowdown.yokai;
 
-import com.ykwshowdown.init.*;
+import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * IV of a Yo-kai (algo 1 of Algorithmes_combat.md).
+ * Rule of the game: HP/2 + STR + SPR + DEF + SPE <= 40, no limit per stat.
+ * HP is stored with its real value (not HP/2), and it always goes up by 2, so it is even.
+ */
 public class IV {
-    // TODO : regles du jeu : 40 points au total, les PV comptent pour moitie (HP/2 + STR + SPR + DEF + SPE <= 40),
-    //        aucune limite de 15 par stat dans le jeu, et on stocke la vraie valeur (pas HP/2)
-    final int MAXIVPOINTS = 40;
-    final int MAXIV = 15;
-    final int MINIV = 0;
+
+    public static final int MAXIVPOINTS = 40;
+    static final int MINIV = 0;
+    private static final Random RANDOM = new Random();
+
     int HP;
     int STR;
     int SPR;
@@ -25,88 +30,94 @@ public class IV {
     }
 
     public IV(int HP, int STR, int SPR, int DEF, int SPE) {
-        this.HP = HP;
-        this.STR = STR;
-        this.SPR = SPR;
-        this.DEF = DEF;
-        this.SPE = SPE;
+        setIV(HP, STR, SPR, DEF, SPE);
     }
 
-    public void GenerateIV() {
-        // TODO : generation du jeu (algo 1) : 40 tirages, chaque tirage choisit une stat au hasard parmi 5,
-        //        +2 si c'est les PV, +1 sinon
+    /** Points used: HP counts for half. */
+    public static int pointsUsed(int hp, int str, int spr, int def, int spe) {
+        return hp / 2 + str + spr + def + spe;
     }
 
-    public void setIV() {
-        int total = MAXIVPOINTS;
-        int hpSaisi, strSaisi, sprSaisi, defSaisi, speSaisi;
-
-        // hp
-        do {
-            System.out.println("IV disponibles : " + total);
-            System.out.println("Choisi les IV de HP (0-16) :");
-            hpSaisi = sc.nextInt();
-            if (hpSaisi < MINIV || hpSaisi > 16 || hpSaisi > total)
-                System.out.println("Valeur invalide !");
-        } while (hpSaisi < MINIV || hpSaisi > 16 || hpSaisi > total);
-        total -= hpSaisi/2;
-        HP = hpSaisi/2;
-
-        // Strength
-        do {
-            System.out.println("IV disponibles : " + total);
-            System.out.println("Choisi les IV de STR (0-15) :");
-            strSaisi = sc.nextInt();
-            if (strSaisi < MINIV || strSaisi > MAXIV || strSaisi > total)
-                System.out.println("Valeur invalide !");
-        } while (strSaisi < MINIV || strSaisi > MAXIV || strSaisi > total);
-        total -= strSaisi;
-        STR = strSaisi;
-
-        //Spirit
-        do {
-            System.out.println("IV disponibles : " + total);
-            System.out.println("Choisi les IV de SPR (0-15) :");
-            sprSaisi = sc.nextInt();
-            if (sprSaisi < MINIV || sprSaisi > MAXIV || sprSaisi > total)
-                System.out.println("Valeur invalide !");
-        } while (sprSaisi < MINIV || sprSaisi > MAXIV || sprSaisi > total);
-        total -= sprSaisi;
-        SPR = sprSaisi;
-
-        // Defense
-        do {
-            System.out.println("IV disponibles : " + total);
-            System.out.println("Choisi les IV de Defense (0-15) :");
-            defSaisi = sc.nextInt();
-            if (defSaisi < MINIV || defSaisi > MAXIV || defSaisi > total)
-                System.out.println("Valeur invalide !");
-        } while (defSaisi < MINIV || defSaisi > MAXIV || defSaisi > total);
-        total -= defSaisi;
-        DEF = defSaisi;
-
-        do {
-            System.out.println("IV disponibles : " + total);
-            System.out.println("Choisi les IV de Vitesse (0-15) :");
-            speSaisi = sc.nextInt();
-            if (speSaisi < MINIV || speSaisi > MAXIV || speSaisi > total)
-                System.out.println("Valeur invalide !");
-        } while (speSaisi < MINIV || speSaisi > MAXIV || speSaisi > total);
-        total -= speSaisi;
-        SPE = speSaisi;
+    public int getPointsUsed() {
+        return pointsUsed(HP, STR, SPR, DEF, SPE);
     }
 
+    public int getPointsLeft() {
+        return MAXIVPOINTS - getPointsUsed();
+    }
+
+    /** Returns null if the IV are valid, otherwise the reason. */
+    public static String checkIV(int hp, int str, int spr, int def, int spe) {
+        if (hp < MINIV || str < MINIV || spr < MINIV || def < MINIV || spe < MINIV) {
+            return "Les IV ne peuvent pas etre negatifs";
+        }
+        if (hp % 2 != 0) {
+            return "Les IV de HP vont de 2 en 2 (valeur paire)";
+        }
+        if (pointsUsed(hp, str, spr, def, spe) > MAXIVPOINTS) {
+            return "Trop de points : HP/2 + STR + SPR + DEF + SPE doit faire " + MAXIVPOINTS + " au maximum";
+        }
+        return null;
+    }
+
+    /** Sets the 5 IV, throws IllegalArgumentException if they break the rules. */
     public void setIV(int hp, int str, int spr, int def, int spe) {
-        // TODO : verifier HP/2 + str + spr + def + spe <= 40 et aucune valeur negative, puis stocker les valeurs telles quelles
+        String error = checkIV(hp, str, spr, def, spe);
+        if (error != null) {
+            throw new IllegalArgumentException(error);
+        }
+        this.HP = hp;
+        this.STR = str;
+        this.SPR = spr;
+        this.DEF = def;
+        this.SPE = spe;
+    }
+
+    /** Generation of the game: 40 draws, each draw picks one of the 5 stats, +2 for HP, +1 otherwise. */
+    public void GenerateIV() {
+        int[] iv = new int[5];
+        for (int i = 0; i < MAXIVPOINTS; i++) {
+            int stat = RANDOM.nextInt(5);
+            if (stat == 0) {
+                iv[0] += 2;
+            } else {
+                iv[stat] += 1;
+            }
+        }
+        setIV(iv[0], iv[1], iv[2], iv[3], iv[4]);
+    }
+
+    /** Console version: asks the 5 values and checks the total. */
+    public void setIV() {
+        int hp, str, spr, def, spe;
+        String error;
+        do {
+            System.out.println("IV a repartir : HP/2 + STR + SPR + DEF + SPE <= " + MAXIVPOINTS + " (HP pair)");
+            System.out.println("HP :");
+            hp = sc.nextInt();
+            System.out.println("STR :");
+            str = sc.nextInt();
+            System.out.println("SPR :");
+            spr = sc.nextInt();
+            System.out.println("DEF :");
+            def = sc.nextInt();
+            System.out.println("SPE :");
+            spe = sc.nextInt();
+            error = checkIV(hp, str, spr, def, spe);
+            if (error != null) {
+                System.out.println("Valeur invalide : " + error);
+            }
+        } while (error != null);
+        setIV(hp, str, spr, def, spe);
     }
 
     public void print() {
         System.out.println("Les IV de ton yokai");
-        System.out.println("HP" + HP);
-        System.out.println("STR" + STR);
-        System.out.println("SPR" + SPR);
-        System.out.println("DEF" + DEF);
-        System.out.println("SPE" + SPE);
+        System.out.println("HP " + HP);
+        System.out.println("STR " + STR);
+        System.out.println("SPR " + SPR);
+        System.out.println("DEF " + DEF);
+        System.out.println("SPE " + SPE);
     }
 
     public int GetIvHP() {

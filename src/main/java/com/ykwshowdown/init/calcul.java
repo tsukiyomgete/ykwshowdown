@@ -42,18 +42,14 @@ public class calcul {
 		return 1;
 	}
 
+	/** Stats without attitude, gym or equipment (algo 1). The formula is in YokaiGeneral. */
 	public static Stat calculStatsUncorrected(YokaiGeneral yg) {
-		// TODO : formule des stats sans attitude/gym/equipement (algo 1 "Stats")
-		// TODO : attention, le jeu calcule en float (pas en double) puis tronque
-		return new Stat(0, 0, 0, 0, 0);
+		return yg.calculateStats(false);
 	}
 
+	/** Full stats: IV + attitude + gym + equipment (algo 1). The formula is in YokaiGeneral. */
 	public static Stat calculStatsCorrected(YokaiGeneral yg) {
-		// TODO : formule complete des stats (algo 1 "Stats") : min + (max + IV - min) / 98 * (niveau - 1)
-		//        + EV d'attitude * (1 + niveau / 198) + gymnase, puis tronquer, borner 1..999, puis + equipement
-		// TODO : bugs de l'ancienne version a ne pas refaire : nbSTR lisait nbGetSPR(), et Level / 198 etait
-		//        une division entiere (toujours 0)
-		return new Stat(0, 0, 0, 0, 0);
+		return yg.calculateStats(true);
 	}
 
 }

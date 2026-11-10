@@ -39,6 +39,9 @@ public class DataBase {
 
     public static class RawYokai{
         @SerializedName("id") int yokaiId;
+        @SerializedName("medallium") int idMedallium;
+        @SerializedName("face_x") Integer faceX;    // null if no medal in face_icon.png
+        @SerializedName("face_y") Integer faceY;
         @SerializedName("name") String yokaiName;
         @SerializedName("tribe") String yokaiTribe;
         @SerializedName("rank") String yokaiRank;
@@ -70,7 +73,7 @@ public class DataBase {
         @SerializedName("prob_inspirit") int probInspirit;
         int prob_guard;
 
-        public RawYokai(int yokaiId, String yokaiName, String yokaiTribe, String yokaiRank,
+        public RawYokai(int yokaiId, int idMedallium,String yokaiName, String yokaiTribe, String yokaiRank,
                         int hpMin, int strMin, int sprMin, int defMin, int spdMin,
                         int hpMax, int strMax, int sprMax, int defMax, int spdMax,
                         double res_fire, double resIce, double res_earth,
@@ -78,6 +81,7 @@ public class DataBase {
                         int attackId, int techniqueId, Integer inspiritId, Integer ultimateId,
                         int prob_attack, int prob_technique, int probInspirit, int prob_guard) {
             this.yokaiId = yokaiId;
+            this.idMedallium = idMedallium;
             this.yokaiName = yokaiName;
             this.yokaiTribe = yokaiTribe;
             this.yokaiRank = yokaiRank;
@@ -138,6 +142,10 @@ public class DataBase {
             this.actionEffect = actionEffect;
             this.actionTarget = actionTarget;
         }
+
+        public String getName() {
+            return actionName;
+        }
     }
     public static class RawAttitude {
         @SerializedName("id") int attitudeId;
@@ -158,6 +166,17 @@ public class DataBase {
             this.evDef = evDef;
             this.evSpd = evSpd;
         }
+
+        public String getName() {
+            return attitudeName;
+        }
+
+        public int getId() { return attitudeId; }
+        public int getEvHp() { return evHp; }
+        public int getEvStr() { return evStr; }
+        public int getEvSpr() { return evSpr; }
+        public int getEvDef() { return evDef; }
+        public int getEvSpd() { return evSpd; }
 
     }
     public static class RawEquipment {
@@ -184,6 +203,19 @@ public class DataBase {
             this.bonusSpd = bonusSpd;
             this.effectEquipment = effectEquipment;
         }
+
+        public String getName() {
+            return nameEquipment;
+        }
+
+        public int getId() { return idEquipment; }
+        public String getRank() { return rankEquipment; }
+        public int getBonusHp() { return bonusHp; }
+        public int getBonusStr() { return bonusStr; }
+        public int getBonusSpr() { return bonusSpr; }
+        public int getBonusDef() { return bonusDef; }
+        public int getBonusSpd() { return bonusSpd; }
+        public String getEffect() { return effectEquipment; }
     }
 
 
@@ -221,10 +253,14 @@ public class DataBase {
             Stat statMin = new Stat(y.hpMin, y.strMin, y.sprMin, y.defMin, y.spdMin);
             Stat statMax = new Stat(y.hpMax, y.strMax, y.sprMax, y.defMax, y.spdMax);
             double[] res = {y.res_fire, y.resIce, y.res_earth, y.res_lightning, y.res_water, y.res_wind};
-            mapOfYokai.put(y.yokaiId, new Yokai(y.yokaiId, y.yokaiName, y.yokaiRank.charAt(0), y.yokaiTribe,
+            Yokai yokai = new Yokai(y.yokaiId, y.idMedallium,y.yokaiName, y.yokaiRank.charAt(0), y.yokaiTribe,
                     statMin, statMax, res,
                     y.attackId, y.techniqueId, y.inspiritId, y.ultimateId,
-                    y.prob_attack, y.prob_technique, y.probInspirit, y.prob_guard));
+                    y.prob_attack, y.prob_technique, y.probInspirit, y.prob_guard);
+            if (y.faceX != null && y.faceY != null) {
+                yokai.setFaceIcon(new face_icon(y.faceX, y.faceY));
+            }
+            mapOfYokai.put(y.yokaiId, yokai);
         }
         isLoaded = true;
         System.out.println("Donnees chargees : " + mapOfYokai.size() + " yokai, " + mapOfAction.size() + " actions, "
@@ -265,6 +301,25 @@ public class DataBase {
 
     public static void trierActions(){
 
+    }
+
+
+    public static RawEquipment getEquipment(String nom) {
+        for (RawEquipment e : mapOfEquipment.values()) {
+            if (e.getName().equalsIgnoreCase(nom)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    public static RawAttitude getAttitude(String nom) {
+        for (RawAttitude a : mapOfAttitude.values()) {
+            if (a.getName().equalsIgnoreCase(nom)) {
+                return a;
+            }
+        }
+        return null;
     }
 
     public static Yokai getYokai(String nom) {

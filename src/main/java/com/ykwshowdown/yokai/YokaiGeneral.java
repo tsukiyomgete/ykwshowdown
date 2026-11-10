@@ -1,15 +1,21 @@
 package com.ykwshowdown.yokai;
 
-import java.io.Serial;
 import java.util.Scanner;
 
 import com.ykwshowdown.battle.YokaiFight;
 import com.ykwshowdown.database.DataBase;
 import com.google.gson.annotations.SerializedName;
 
-import com.ykwshowdown.fightingdata.*;
-
+/**
+ * Yo-kai customised by the player: species + level + IV + attitude + equipment + gym.
+ * The real stats (StatActu) are recalculated automatically each time one of them changes.
+ */
 public class YokaiGeneral {
+
+    // algo 1 constants: the game computes in float, keep these exact values
+    private static final float ONE_OVER_98 = 0.010204081f;
+    private static final float ONE_OVER_198 = 0.0050505050f;
+    public static final int DEFAULT_LEVEL = 60;
 
     Yokai yokai;
     @SerializedName("surnomYokai")
@@ -27,6 +33,8 @@ public class YokaiGeneral {
     IV ivYokai;
     SportsClub SportsClub;
 
+    // ===== Construction =====
+
     public YokaiGeneral() {
         yokai = null;
         surnom = "???";
@@ -34,99 +42,176 @@ public class YokaiGeneral {
         ItemYokai = null;
         level = 0;
         attitudeYoKai = null;
-        ivYokai = new IV(0, 0, 0, 0, 0);
+        ivYokai = new IV();
         SportsClub = new SportsClub(0, 0, 0, 0);
-        ItemYokai = null;
     }
 
     public YokaiGeneral(Yokai yokai, String surnom, int level, IV ivYokai) {
-
+        this();
         this.yokai = yokai;
         this.surnom = surnom;
         this.level = level;
+        if (ivYokai != null) {
+            this.ivYokai = ivYokai;
+        }
+        updateStats();
     }
 
     public YokaiGeneral(Yokai yokai, String surnom, int level, Attitude attitudeYoKai, Equipement EquipYokai) {
-
+        this();
         this.yokai = yokai;
         this.surnom = surnom;
-        this.ItemYokai = EquipYokai;
         this.level = level;
-
         this.attitudeYoKai = attitudeYoKai;
-
-        this.SportsClub = new SportsClub(0, 0, 0, 0);
-        this.StatActu = new Stat(0, 0, 0, 0, 0);
-        this.ivYokai = new IV(0, 0, 0, 0, 0);
+        this.ItemYokai = EquipYokai;
+        updateStats();
     }
 
-    public Yokai GetYokai() {
-        return yokai;
-    }
-
-    public String GetYokaiName() {
-        return yokai.GetName();
-    }
-
-    public Tier GetTier() {
-        return yokai.GetTier();
-    }
-
-    public IV GetIv() {
-        return ivYokai;
-    }
-
-    public void setLevel(int level) {
-        if (level < 0 || level > 99) {
-            throw new IllegalArgumentException("Impossible, valeur de niveau non comprise");
-        } else {
-            this.level = level;
-        }
-    }
+    // ===== Species =====
 
     public void addYokai(String str) {
-        // Scanner sc = new Scanner(System.in);
         Yokai y = rechercheYokai(str);
         if (y != null) {
             this.yokai = y;
-            setLevel(60);
+            setLevel(DEFAULT_LEVEL);
         } else {
             System.out.println("Yokai non trouvé!");
         }
     }
 
     public void replaceYokai(String str) {
-        Yokai y = rechercheYokai(str);
-
-        if (y != null) {
-            this.yokai = y;
-            setLevel(60);
-        } else {
-            System.out.println("Yokai non trouvé!");
-        }
+        addYokai(str);
     }
 
     public Yokai rechercheYokai(String nomRecherche) {
-        try {
-            Yokai y = DataBase.getYokai(nomRecherche);
-            System.out.println(y.GetName());
-            return y;
-        } catch (Exception e) {
-            System.out.println("Erreur de connexion au serveur, réessayez. (Methode Recherche Yokai)");
-            System.out.println("Détail : " + e.getMessage());
-            return null;
+        Yokai y = DataBase.getYokai(nomRecherche);
+        if (y == null) {
+            System.out.println("Yokai inconnu : " + nomRecherche);
         }
+        return y;
     }
 
-    public YokaiFight toYokaiFight(int teamNumber) {
-        return new YokaiFight(
-                this.GetName(),
-                this.GetHP(),
-                this.GetSTR(),
-                this.GetSPR(),
-                this.GetDEF(),
-                this.GetSPE(),
-                teamNumber);
+    // ===== Level =====
+
+    public void setLevel(int level) {
+        if (level < 1 || level > 99) {
+            throw new IllegalArgumentException("Impossible, le niveau doit etre entre 1 et 99");
+        }
+        this.level = level;
+        updateStats();
+    }
+
+    public void setLevel(String str) {
+        setLevel(Integer.parseInt(str.trim()));
+    }
+
+    // ===== IV =====
+
+    /** Sets the IV by hand, throws IllegalArgumentException if HP/2 + STR + SPR + DEF + SPE > 40. */
+    public void setIv(int ivHP, int ivSTR, int ivSPR, int ivDEF, int ivSPE) {
+        ivYokai.setIV(ivHP, ivSTR, ivSPR, ivDEF, ivSPE);
+        updateStats();
+    }
+
+    /** Random IV, like in the game. */
+    public void generateIV() {
+        ivYokai.GenerateIV();
+        updateStats();
+    }
+
+    /** Console version: asks the IV one by one. */
+    public void setIV(String name) {
+        System.out.println("On va choisir les IV de " + name);
+        ivYokai.setIV();
+        updateStats();
+    }
+
+    // ===== Attitude =====
+
+    /** Looks for the attitude by name in the data from the server. Returns false if unknown. */
+    public boolean setAttitude(String name) {
+        if (name == null || name.isBlank()) {
+            attitudeYoKai = null;
+            updateStats();
+            return true;
+        }
+        DataBase.RawAttitude a = DataBase.getAttitude(name.trim());
+        if (a == null) {
+            return false;
+        }
+        attitudeYoKai = new Attitude(a.getName(), a.getEvHp(), a.getEvStr(), a.getEvSpr(), a.getEvDef(), a.getEvSpd());
+        updateStats();
+        return true;
+    }
+
+    // ===== Equipment =====
+
+    /** Looks for the equipment by name in the data from the server. Returns false if unknown. */
+    public boolean setEquipment(String name) {
+        if (name == null || name.isBlank()) {
+            ItemYokai = null;
+            updateStats();
+            return true;
+        }
+        DataBase.RawEquipment e = DataBase.getEquipment(name.trim());
+        if (e == null) {
+            return false;
+        }
+        ItemYokai = new Equipement(e.getId(), e.getName(), e.getRank(),
+                e.getBonusHp(), e.getBonusStr(), e.getBonusSpr(), e.getBonusDef(), e.getBonusSpd(), e.getEffect());
+        updateStats();
+        return true;
+    }
+
+    // ===== Stats (algo 1) =====
+
+    /** Recalculates StatActu with everything: IV, attitude, gym and equipment. */
+    public void updateStats() {
+        StatActu = calculateStats(true);
+    }
+
+    /**
+     * Algo 1 of Algorithmes_combat.md.
+     * withBonuses = false : only the species, the level and the IV (no attitude, gym or equipment).
+     */
+    public Stat calculateStats(boolean withBonuses) {
+        if (yokai == null || level < 1) {
+            return new Stat(0, 0, 0, 0, 0);
+        }
+        Stat min = yokai.getStatA();   // level 1
+        Stat max = yokai.getStatB();   // level 99
+
+        int[] minS = {min.HP, min.STR, min.SPR, min.DEF, min.SPE};
+        int[] maxS = {max.HP, max.STR, max.SPR, max.DEF, max.SPE};
+        int[] iv = {ivYokai.HP, ivYokai.STR, ivYokai.SPR, ivYokai.DEF, ivYokai.SPE};
+        int[] ev = new int[5];
+        int[] gym = new int[5];
+        int[] equip = new int[5];
+
+        if (withBonuses) {
+            if (attitudeYoKai != null) {
+                ev = new int[]{attitudeYoKai.GetHP(), attitudeYoKai.GetSTR(), attitudeYoKai.GetSPR(),
+                        attitudeYoKai.GetDEF(), attitudeYoKai.GetSPE()};
+            }
+            if (SportsClub != null) {
+                gym = new int[]{0, SportsClub.nbGetSTR(), SportsClub.nbGetSPR(), SportsClub.nbGetDEF(), SportsClub.nbGetSPE()};
+            }
+            if (ItemYokai != null) {
+                equip = new int[]{ItemYokai.GetHP(), ItemYokai.GetSTR(), ItemYokai.GetSPR(),
+                        ItemYokai.GetDEF(), ItemYokai.GetSPE()};
+            }
+        }
+
+        int[] result = new int[5];
+        for (int i = 0; i < 5; i++) {
+            float s = minS[i];
+            s = s + (maxS[i] + iv[i] - minS[i]) * ONE_OVER_98 * (level - 1);
+            s = s + ev[i] * (1 + level * ONE_OVER_198);
+            s = s + gym[i];
+            int stat = Math.max(1, Math.min(999, (int) s));   // truncated, between 1 and 999
+            result[i] = Math.max(1, stat + equip[i]);           // equipment added after, minimum 1
+        }
+        return new Stat(result[0], result[1], result[2], result[3], result[4]);
     }
 
     public void setStat(Stat stat) {
@@ -137,38 +222,74 @@ public class YokaiGeneral {
         this.StatActu.SPE = stat.SPE;
     }
 
+    public Stat GetStats() {
+        return StatActu;
+    }
+
+    // ===== Nickname =====
+
+    public static final int MAX_NICKNAME = 26;
+
+    /** TODO rename */
+    public String GetNickname() {
+        return surnom == null || surnom.equals("???") ? "" : surnom;
+    }
+
+    /** TODO rename */
+    public void setNickname(String nickname) {
+        String n = nickname == null ? "" : nickname.trim();
+        if (n.length() > MAX_NICKNAME) {
+            n = n.substring(0, MAX_NICKNAME);
+        }
+        surnom = n.isEmpty() ? "???" : n;
+    }
+
     public void setName() {
         final int MAXNAMESIZE = 26;
         Scanner sc = new Scanner(System.in);
         System.out.println("What will be the nickname of your yokai?");
         String str = sc.nextLine();
-        if (str.length() > 26 || str.length() < 0) {
+        if (str.length() > MAXNAMESIZE) {
             System.out.println("The name of your yokai isn't correct, max limit is 26 caracter");
         } else {
             surnom = str;
         }
     }
 
-    public void setIV(String name) {
-        System.out.println("On va générer les IV de " + name);
-        ivYokai.setIV();
+    // ===== Battle =====
+
+    public YokaiFight toYokaiFight(int teamNumber) {
+        updateStats();
+        return new YokaiFight(
+                this.GetName(),
+                this.GetHP(),
+                this.GetSTR(),
+                this.GetSPR(),
+                this.GetDEF(),
+                this.GetSPE(),
+                teamNumber);
     }
 
-    public void setIv(int ivHP, int ivSTR, int ivSPR, int ivDEF, int ivSPE) {
-        ivYokai.setIV(ivHP, ivSTR, ivSPR, ivDEF, ivSPE);
+    // ===== Getters =====
+
+    public Yokai GetYokai() {
+        return yokai;
     }
 
-    public void setAttitude(String str) {
-        this.attitudeYoKai = new Attitude(str, 0, 0, 0, 0, 0);
+    public String GetYokaiName() {
+        return yokai.GetName();
     }
 
-    public void setLevel(String str) {
-        int level = Integer.parseInt(str);
-        if (level < 0 || level > 99) {
-            throw new IllegalArgumentException("Impossible, valeur de niveau non comprise");
-        } else {
-            this.level = level;
-        }
+    public String GetName() {
+        return yokai.GetName();
+    }
+
+    public Tier GetTier() {
+        return yokai.GetTier();
+    }
+
+    public int GetLevel() {
+        return level;
     }
 
     public String GetTribe() {
@@ -191,12 +312,26 @@ public class YokaiGeneral {
         return this.attitudeYoKai;
     }
 
+    /** Attitude name, or "null" if none (used by the export). */
+    public String GetAttitudeName() {
+        return attitudeYoKai == null ? "null" : attitudeYoKai.getAttitude();
+    }
+
     public Equipement GetEquipement() {
         return ItemYokai;
     }
 
+    /** Equipment name, or "null" if none (used by the export). */
+    public String GetEquipementName() {
+        return ItemYokai == null || ItemYokai.GetName() == null ? "null" : ItemYokai.GetName();
+    }
+
     public SportsClub GetSportsClub() {
         return SportsClub;
+    }
+
+    public IV GetIv() {
+        return ivYokai;
     }
 
     public int GetIvHP() {
@@ -237,14 +372,6 @@ public class YokaiGeneral {
 
     public int GetSPE() {
         return StatActu.SPE;
-    }
-
-    public String GetName() {
-        return yokai.GetName();
-    }
-
-    public int GetLevel() {
-        return level;
     }
 
 }

@@ -29,6 +29,12 @@ public enum Tier {
         return this;
     }
 
+    /** TODO rename */
+    public boolean estAutoriseDans(Tier format)
+    {
+        return this.ordre >= format.ordre;
+    }
+
     public boolean estSuperieur(Tier tierTest)
     {
         return tierTest.ordre < this.ordre;

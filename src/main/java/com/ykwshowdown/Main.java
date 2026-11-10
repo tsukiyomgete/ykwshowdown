@@ -12,10 +12,14 @@ import com.ykwshowdown.VisualSwing.JEcranRetour;
 import com.ykwshowdown.VisualSwing.JHomeMenu;
 import com.ykwshowdown.VisualSwing.JLogMenu;
 import com.ykwshowdown.VisualSwing.JTeamBuilder;
+import com.ykwshowdown.VisualSwing.JTeamEditor;
+import com.ykwshowdown.menu.WatchList;
 import com.ykwshowdown.chat.Message;
 import com.ykwshowdown.chat.ModeleChat;
 import com.ykwshowdown.controleurs.ControleurLogin;
 import com.ykwshowdown.controleurs.ControleurMenu;
+import com.ykwshowdown.controleurs.ControleurTeamBuilder;
+import com.ykwshowdown.controleurs.TeamEditorController;
 import com.ykwshowdown.menu.HomeMenu;
 import com.ykwshowdown.reseau.ConnexionServeur;
 
@@ -60,13 +64,16 @@ public class Main {
 
     private static void lancer(ConnexionServeur serveur) {
         // --- Modeles ---
+        WatchList equipes = new WatchList();   // TODO rename
         ModeleChat modeleChat = new ModeleChat(serveur);
         modeleChat.ajouter(Message.maintenant("Systeme", "Bienvenue sur YKW Showdown !"));
 
         // --- Vues ---
         JLogMenu login = new JLogMenu();
         JHomeMenu menu = new JHomeMenu(new HomeMenu(), modeleChat);
-        JEcranRetour ecranEquipes = new JEcranRetour("Modifier les equipes", new JTeamBuilder());
+        JTeamBuilder teamBuilder = new JTeamBuilder();
+        JEcranRetour ecranEquipes = new JEcranRetour("Modifier les equipes", teamBuilder);
+        JTeamEditor teamEditor = new JTeamEditor();
 
         JLabel bientot = new JLabel("Ecran de combat : a venir", SwingConstants.CENTER);
         bientot.setFont(new Font("Verdana", Font.BOLD, 20));
@@ -79,10 +86,13 @@ public class Main {
         conteneur.add(menu, ControleurMenu.CARTE_MENU);
         conteneur.add(ecranEquipes, ControleurMenu.CARTE_EQUIPES);
         conteneur.add(ecranCombat, ControleurMenu.CARTE_COMBAT);
+        conteneur.add(teamEditor, ControleurMenu.CARTE_EDITEUR);
 
         // --- Controleurs ---
         ControleurMenu ctrlMenu = new ControleurMenu(cartes, conteneur, menu, modeleChat, ecranEquipes, ecranCombat, "Invite");
-        new ControleurLogin(login, ctrlMenu, serveur);
+        TeamEditorController ctrlEditor = new TeamEditorController(teamEditor, cartes, conteneur);
+        new ControleurLogin(login, ctrlMenu, ctrlEditor, serveur);
+        new ControleurTeamBuilder(teamBuilder, equipes, ctrlEditor, cartes, conteneur);
         if (serveur != null) {
             serveur.envoyer("/data/all");
         }

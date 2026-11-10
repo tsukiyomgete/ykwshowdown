@@ -22,6 +22,7 @@ public class ControleurMenu implements ActionListener, EcouteurServeur {
     public static final String CARTE_MENU    = "menu";
     public static final String CARTE_EQUIPES = "equipes";
     public static final String CARTE_COMBAT  = "combat";
+    public static final String CARTE_EDITEUR = "editeur";
 
 
     private CardLayout cartes;

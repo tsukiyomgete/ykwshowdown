@@ -12,13 +12,15 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
 
     private JLogMenu vue;
     private ControleurMenu navigation;
+    private TeamEditorController teamEditor;
     private ConnexionServeur serveur;
     private String pseudoEnCours;
     private boolean requeteEnCours;
 
-    public ControleurLogin(JLogMenu vue, ControleurMenu navigation, ConnexionServeur serveur) {
+    public ControleurLogin(JLogMenu vue, ControleurMenu navigation, TeamEditorController teamEditor, ConnexionServeur serveur) {
         this.vue = vue;
         this.navigation = navigation;
+        this.teamEditor = teamEditor;
         this.serveur = serveur;
         vue.setEcouteur(this);
         if (serveur != null) {
@@ -85,6 +87,7 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
     public void messageRecu(String ligne) {
         if (ligne.startsWith("/data/")) {
             DataBase.loadServerData(ligne.substring("/data/".length()));
+            teamEditor.dataLoaded();
             vue.setMessage("Donnees chargees");
             return;
         }

@@ -15,6 +15,7 @@ public class Yokai {
     public static final int WIND = 5;
 
     int id;
+    int idMedaillum;
     String nom;
     char rangYokai;
     String tribuYokai;
@@ -42,7 +43,7 @@ public class Yokai {
     String talent;
     double chanceOfBeingInspirited;
 
-    public Yokai(int id, String nom, char rang, String tribu,
+    public Yokai(int id, int idMedaillum,String nom, char rang, String tribu,
             Stat statMin, Stat statMax,
             double[] resistances,
             int attackId, int techniqueId, Integer inspiritId, Integer ultimateId,
@@ -63,10 +64,20 @@ public class Yokai {
         this._baseInspiritPerC = probInspirit;
         this._baseGuardPerC = probGuard;
         this.yokaiTier = Tier.NU;
+        this.idMedaillum = idMedaillum;
     }
 
     public int GetID() {
         return id;
+    }
+
+    /** Position of the medal in face_icon.png, null if the Yo-kai has none. */
+    public face_icon getFaceIcon() {
+        return faceYoKai;
+    }
+
+    public void setFaceIcon(face_icon faceYoKai) {
+        this.faceYoKai = faceYoKai;
     }
 
     public String GetName() {
@@ -109,7 +120,7 @@ public class Yokai {
         return resistances;
     }
 
-    /** element = Yokai.FIRE, Yokai.ICE, ... */
+
     public double getResistance(int element) {
         return resistances[element];
     }
