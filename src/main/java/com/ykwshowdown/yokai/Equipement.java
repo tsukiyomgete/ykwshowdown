@@ -11,7 +11,6 @@ public class Equipement{
      int BaseSPE;
      String effectEquipment;
 
-
     public Equipement(int IdEquipement, String rank,int BaseHP, int BaseSTR, int BaseSPR, int BaseDEF, int BaseSPE, String effectEquipment) {
         this.IdEquipement = IdEquipement;
         this.rankEquipment = rank;

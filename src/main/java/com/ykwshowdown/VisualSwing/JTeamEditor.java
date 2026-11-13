@@ -30,14 +30,13 @@ import com.ykwshowdown.yokai.Yokai;
 import com.ykwshowdown.yokai.YokaiGeneral;
 import com.ykwshowdown.yokai.face_icon;
 
-/** TODO rename */
 public class JTeamEditor extends JPanel {
 
     public static final String ACTION_BACK_TO_LIST = "EDITOR_BACK";
     public static final String ACTION_IMPORT_EXPORT = "EDITOR_IMPORT_EXPORT";
     public static final String ACTION_VALIDATE = "EDITOR_VALIDATE";
-    public static final String ACTION_SELECT_SLOT = "EDITOR_SLOT_";     // TODO rename
-    public static final String ACTION_SELECT_YOKAI = "EDITOR_YOKAI";    // TODO rename
+    public static final String ACTION_SELECT_SLOT = "EDITOR_SLOT_";
+    public static final String ACTION_SELECT_YOKAI = "EDITOR_YOKAI";
     public static final String ACTION_SELECT_EQUIPMENT = "EDITOR_EQUIPMENT";
     public static final String ACTION_SELECT_ATTITUDE = "EDITOR_ATTITUDE";
     public static final String ACTION_NICKNAME = "EDITOR_NICKNAME";
@@ -68,9 +67,7 @@ public class JTeamEditor extends JPanel {
     private final TeamWheel wheel = new TeamWheel();
     private final YokaiSheet sheet = new YokaiSheet();
 
-    private WatchBuilder team;   // TODO rename
-
-    // ===== TODO rename =====
+    private WatchBuilder team;
 
     public JTeamEditor() {
         setLayout(new BorderLayout());
@@ -122,8 +119,6 @@ public class JTeamEditor extends JPanel {
         return b;
     }
 
-    // ===== TODO rename =====
-
     public void setListener(ActionListener listener) {
         backButton.addActionListener(listener);
         importExportButton.addActionListener(listener);
@@ -132,9 +127,6 @@ public class JTeamEditor extends JPanel {
         sheet.setListener(listener);
     }
 
-    // ===== TODO rename =====
-
-    /** TODO rename */
     public void showTeam(WatchBuilder team) {
         this.team = team;
         teamNameField.setText(team.GetTeamName());
@@ -149,7 +141,6 @@ public class JTeamEditor extends JPanel {
         refresh();
     }
 
-    /** TODO rename */
     public void refresh() {
         if (team == null) {
             return;
@@ -163,8 +154,6 @@ public class JTeamEditor extends JPanel {
             sheet.display(selection, team.getYokaiIndex(selection));
         }
     }
-
-    // ===== TODO rename =====
 
     public void openSheet(int position) {
         wheel.setSelection(position);
@@ -185,9 +174,6 @@ public class JTeamEditor extends JPanel {
         return wheel.getSelection();
     }
 
-    // ===== TODO rename =====
-
-    /** TODO rename */
     public void fillLists() {
         sheet.fillYokaiNameBox();
         sheet.fillEquipmentBox();
@@ -210,18 +196,14 @@ public class JTeamEditor extends JPanel {
         return sheet.getNickname();
     }
 
-    /** TODO rename */
     public int[] getIvValues() {
         return sheet.getIvValues();
     }
-
-    // ===== TODO rename =====
 
     public void setSheetMessage(String message) {
         sheet.setMessage(message);
     }
 
-    /** TODO rename */
     public void showValidation(String problems) {
         if (problems == null) {
             validationLabel.setForeground(GOOD);
@@ -233,7 +215,6 @@ public class JTeamEditor extends JPanel {
         }
     }
 
-    /** TODO rename */
     public String askImportExport(String exportText) {
         JTextArea area = new JTextArea(exportText, 22, 48);
         area.setFont(new Font("Monospaced", Font.PLAIN, 12));
@@ -248,8 +229,6 @@ public class JTeamEditor extends JPanel {
         JOptionPane.showMessageDialog(this, text, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    // ===== TODO rename =====
-
     public String getTeamName() {
         return teamNameField.getText();
     }
@@ -262,8 +241,6 @@ public class JTeamEditor extends JPanel {
         return FORMATS[Math.max(0, formatChoice.getSelectedIndex())];
     }
 
-
-    /** TODO rename */
     static class TeamWheel extends JComponent {
 
         private static final int[] ANGLES = {150, 90, 30, 210, 270, 330};
@@ -271,8 +248,6 @@ public class JTeamEditor extends JPanel {
         private int selection = -1;
         private int hover = -1;
         private ActionListener listener;
-
-        // ===== TODO rename =====
 
         TeamWheel() {
             setPreferredSize(new Dimension(460, 460));
@@ -306,13 +281,9 @@ public class JTeamEditor extends JPanel {
             addMouseMotionListener(mouse);
         }
 
-        // ===== TODO rename =====
-
         void setListener(ActionListener listener) {
             this.listener = listener;
         }
-
-        // ===== TODO rename =====
 
         void setYokai(int position, Yokai yokai) {
             yokais[position] = yokai;
@@ -332,13 +303,10 @@ public class JTeamEditor extends JPanel {
             return selection;
         }
 
-        // ===== TODO rename =====
-
         private double radius() {
             return Math.min(getWidth(), getHeight()) / 2.0 - 20;
         }
 
-        /** TODO rename */
         private int medalSize() {
             int scale = Math.max(1, (int) Math.round(2 * radius() * 0.22 / face_icon.CELL));
             return face_icon.CELL * scale;
@@ -360,8 +328,6 @@ public class JTeamEditor extends JPanel {
             return -1;
         }
 
-        // ===== TODO rename =====
-
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
@@ -371,14 +337,12 @@ public class JTeamEditor extends JPanel {
             double cx = getWidth() / 2.0;
             double cy = getHeight() / 2.0;
 
-            // TODO rename
             g2.setColor(Color.WHITE);
             g2.fill(new Ellipse2D.Double(cx - R - 10, cy - R - 10, 2 * R + 20, 2 * R + 20));
             g2.setColor(BORDER_COLOR);
             g2.setStroke(new BasicStroke(2f));
             g2.draw(new Ellipse2D.Double(cx - R - 10, cy - R - 10, 2 * R + 20, 2 * R + 20));
 
-            // TODO rename
             for (int i = 0; i < MAX_YOKAI; i++) {
                 boolean front = i < 3;
                 Color top = new Color(front ? 0xC987B8 : 0x89AAD4);
@@ -394,7 +358,6 @@ public class JTeamEditor extends JPanel {
             g2.setStroke(new BasicStroke(2f));
             g2.draw(new Ellipse2D.Double(cx - R, cy - R, 2 * R, 2 * R));
 
-            // TODO rename
             double rc = R * 0.27;
             g2.setColor(Color.WHITE);
             g2.fill(new Ellipse2D.Double(cx - rc - 4, cy - rc - 4, 2 * rc + 8, 2 * rc + 8));
@@ -408,7 +371,6 @@ public class JTeamEditor extends JPanel {
             drawCentered(g2, "BACK", cx, cy + rc * 0.38);
             g2.fillRect((int) (cx - rc), (int) cy - 1, (int) (2 * rc), 2);
 
-            // TODO rename
             int size = medalSize();
             double r = size / 2.0;
             for (int i = 0; i < MAX_YOKAI; i++) {
@@ -420,17 +382,12 @@ public class JTeamEditor extends JPanel {
                 g2.setColor(i == hover ? new Color(0xFFF6D6) : Color.WHITE);
                 g2.fill(medal);
 
-                // TODO rename
-                face_icon face = MedalSprites.faceOf(yokais[i]);
-                if (MedalSprites.isLoaded() && face != null) {
-                    MedalSprites.draw(g2, face, x, y, size);
+                if (MedalSprites.drawYokai(g2, yokais[i], x, y, size)) {
                 } else if (yokais[i] == null) {
-                    // TODO rename
                     g2.setColor(BORDER_COLOR);
                     g2.setFont(new Font("Verdana", Font.BOLD, (int) (r * 0.9)));
                     drawCentered(g2, "+", c.x, c.y);
                 } else {
-                    // TODO rename
                     g2.setColor(new Color(0x333333));
                     g2.setFont(new Font("Verdana", Font.BOLD, Math.max(9, (int) (r / 4.2))));
                     drawCentered(g2, shorten(yokais[i].GetName(), 11), c.x, c.y - r * 0.12);
@@ -439,7 +396,6 @@ public class JTeamEditor extends JPanel {
                     drawCentered(g2, "Rank " + yokais[i].GetRank(), c.x, c.y + r * 0.3);
                 }
 
-                // TODO rename
                 if (i == selection) {
                     g2.setColor(new Color(0xF2B33D));
                     g2.setStroke(new BasicStroke(5f));
@@ -462,8 +418,6 @@ public class JTeamEditor extends JPanel {
         }
     }
 
-
-    /** TODO rename */
     private static class YokaiSheet extends JPanel {
 
         private static final String[] STAT_NAMES = {"HP", "Str", "Spr", "Def", "Spd"};
@@ -478,8 +432,8 @@ public class JTeamEditor extends JPanel {
         private final JTextField nicknameField = new JTextField();
         private final JLabel message = new JLabel(" ");
         private final JLabel[] details = new JLabel[4];
-        private final JLabel[] baseValues = new JLabel[5];    // TODO rename
-        private final JLabel[] finalValues = new JLabel[5];   // TODO rename
+        private final JLabel[] baseValues = new JLabel[5];
+        private final JLabel[] finalValues = new JLabel[5];
         private final StatBar[] bars = new StatBar[5];
         private final JSpinner[] ivSpinners = new JSpinner[5];
         private final JLabel ivPointsLabel = new JLabel(" ");
@@ -492,9 +446,7 @@ public class JTeamEditor extends JPanel {
         private final StyledButton removeButton = new StyledButton("Remove", 0xC987B8, 0xA84D96, 0x823B74);
 
         private ActionListener listener;
-        private boolean updating = false;   // TODO rename
-
-        // ===== TODO rename =====
+        private boolean updating = false;
 
         YokaiSheet() {
             setLayout(new BorderLayout());
@@ -502,7 +454,6 @@ public class JTeamEditor extends JPanel {
             setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, BORDER_COLOR));
             setPreferredSize(new Dimension(370, 0));
 
-            // TODO rename
             title.setFont(new Font("Verdana", Font.BOLD, 13));
             closeButton.setFont(VERDANA_BOLD);
             closeButton.setFocusPainted(false);
@@ -515,7 +466,6 @@ public class JTeamEditor extends JPanel {
             header.add(title, BorderLayout.WEST);
             header.add(closeButton, BorderLayout.EAST);
 
-            // TODO rename
             JPanel content = new JPanel();
             content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
             content.setOpaque(false);
@@ -571,8 +521,6 @@ public class JTeamEditor extends JPanel {
             ivResetButton.setActionCommand(ACTION_IV_RESET);
         }
 
-        // ===== TODO rename =====
-
         void setListener(ActionListener listener) {
             this.listener = listener;
             closeButton.addActionListener(listener);
@@ -583,7 +531,6 @@ public class JTeamEditor extends JPanel {
             ivRandomButton.addActionListener(listener);
             ivResetButton.addActionListener(listener);
             removeButton.addActionListener(listener);
-            // TODO rename
             nicknameField.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusLost(FocusEvent e) {
@@ -592,14 +539,11 @@ public class JTeamEditor extends JPanel {
             });
         }
 
-        /** TODO rename */
         private void fire(Object source, String command) {
             if (!updating && listener != null) {
                 listener.actionPerformed(new ActionEvent(source, ActionEvent.ACTION_PERFORMED, command));
             }
         }
-
-        // ===== TODO rename =====
 
         void fillYokaiNameBox() {
             List<String> names = new ArrayList<>();
@@ -653,9 +597,6 @@ public class JTeamEditor extends JPanel {
             return iv;
         }
 
-        // ===== TODO rename =====
-
-        /** TODO rename */
         void display(int position, YokaiGeneral yg) {
             if (position < 3) {
                 title.setText("Slot " + (position + 1) + " - Front");
@@ -709,9 +650,9 @@ public class JTeamEditor extends JPanel {
                 double r = y.getResistance(i);
                 resistances[i].setText("x" + r);
                 if (r < 1) {
-                    resistances[i].setForeground(GOOD);   // TODO rename
+                    resistances[i].setForeground(GOOD);
                 } else if (r > 1) {
-                    resistances[i].setForeground(BAD);    // TODO rename
+                    resistances[i].setForeground(BAD);
                 } else {
                     resistances[i].setForeground(Color.BLACK);
                 }
@@ -770,7 +711,6 @@ public class JTeamEditor extends JPanel {
             message.setText(text == null || text.isEmpty() ? " " : text);
         }
 
-        /** TODO rename */
         private static String gearText(Equipement e, Attitude a) {
             String text = "";
             if (e != null) {
@@ -808,8 +748,6 @@ public class JTeamEditor extends JPanel {
             return a == null ? "#" + id : a.getName();
         }
 
-        // ===== TODO rename =====
-
         private JPanel detailsTable() {
             JPanel table = new JPanel(new GridLayout(2, 4));
             table.setBackground(Color.WHITE);
@@ -841,7 +779,7 @@ public class JTeamEditor extends JPanel {
                 baseValues[i].setForeground(MUTED_TEXT);
                 c.gridx = 1;
                 table.add(baseValues[i], c);
-                bars[i] = new StatBar(i == 0 ? 450 : 250);   // TODO rename
+                bars[i] = new StatBar(i == 0 ? 450 : 250);
                 c.gridx = 2; c.weightx = 1;
                 table.add(bars[i], c);
                 finalValues[i] = new JLabel("-", SwingConstants.RIGHT);
@@ -852,7 +790,6 @@ public class JTeamEditor extends JPanel {
             return table;
         }
 
-        /** TODO rename */
         private JPanel ivTable() {
             JPanel grid = new JPanel(new GridLayout(2, 5, 4, 2));
             grid.setOpaque(false);
@@ -860,9 +797,12 @@ public class JTeamEditor extends JPanel {
                 grid.add(smallTitle(name, SwingConstants.CENTER));
             }
             for (int i = 0; i < 5; i++) {
-                SpinnerNumberModel model = i == 0
-                        ? new SpinnerNumberModel(0, 0, 2 * IV.MAXIVPOINTS, 2)   // TODO rename
-                        : new SpinnerNumberModel(0, 0, IV.MAXIVPOINTS, 1);
+                SpinnerNumberModel model;
+                if (i == 0) {
+                    model = new SpinnerNumberModel(0, 0, 2 * IV.MAXIVPOINTS, 2);
+                } else {
+                    model = new SpinnerNumberModel(0, 0, IV.MAXIVPOINTS, 1);
+                }
                 JSpinner spinner = new JSpinner(model);
                 spinner.setFont(VERDANA);
                 spinner.addChangeListener(e -> fire(spinner, ACTION_IV_CHANGED));
@@ -920,9 +860,6 @@ public class JTeamEditor extends JPanel {
             return list;
         }
 
-        // ===== TODO rename =====
-
-        /** TODO rename */
         private static JComponent block(JComponent c) {
             JPanel p = new JPanel(new BorderLayout());
             p.setOpaque(false);
@@ -957,16 +894,12 @@ public class JTeamEditor extends JPanel {
         }
     }
 
-
-    /** TODO rename */
     static class SearchBox extends JComboBox<String> {
 
         private final JTextField searchField;
-        private final List<String> allNames = new ArrayList<>();   // TODO rename
-        private boolean filtering = false;                         // TODO rename
+        private final List<String> allNames = new ArrayList<>();
+        private boolean filtering = false;
         private ActionListener listener;
-
-        // ===== TODO rename =====
 
         SearchBox(String actionCommand) {
             setFont(VERDANA);
@@ -981,26 +914,20 @@ public class JTeamEditor extends JPanel {
             });
         }
 
-        // ===== TODO rename =====
-
         void setListener(ActionListener listener) {
             this.listener = listener;
             addActionListener(listener);
         }
 
-        // ===== TODO rename =====
-
-        /** TODO rename */
         void setNames(List<String> names) {
             allNames.clear();
             allNames.addAll(names);
-            allNames.sort(String.CASE_INSENSITIVE_ORDER);   // TODO rename
+            allNames.sort(String.CASE_INSENSITIVE_ORDER);
             filtering = true;
             refill(allNames);
             filtering = false;
         }
 
-        /** TODO rename */
         String getChosenName() {
             Object selected = getSelectedItem();
             if (selected == null) {
@@ -1009,11 +936,10 @@ public class JTeamEditor extends JPanel {
             return selected.toString().trim();
         }
 
-        /** TODO rename */
         void selectWithoutEvent(String name) {
             filtering = true;
             if (getItemCount() != allNames.size()) {
-                refill(allNames);   // TODO rename
+                refill(allNames);
             }
             removeActionListener(listener);
             setSelectedItem(name);
@@ -1021,9 +947,6 @@ public class JTeamEditor extends JPanel {
             filtering = false;
         }
 
-        // ===== TODO rename =====
-
-        /** TODO rename */
         private void refill(List<String> names) {
             removeActionListener(listener);
             removeAllItems();
@@ -1034,17 +957,15 @@ public class JTeamEditor extends JPanel {
             addActionListener(listener);
         }
 
-        /** TODO rename */
         private void filter() {
             if (filtering) {
                 return;
             }
-            // TODO rename
             SwingUtilities.invokeLater(() -> {
                 String text = searchField.getText();
                 Object selected = getSelectedItem();
                 if (selected != null && selected.toString().equals(text)) {
-                    return;   // TODO rename
+                    return;
                 }
 
                 String search = text.trim().toLowerCase();
@@ -1062,17 +983,16 @@ public class JTeamEditor extends JPanel {
 
                 filtering = true;
                 refill(startsWith);
-                searchField.setText(text);   // TODO rename
+                searchField.setText(text);
                 filtering = false;
 
-                hidePopup();   // TODO rename
+                hidePopup();
                 if (!startsWith.isEmpty() && searchField.isFocusOwner()) {
                     showPopup();
                 }
             });
         }
     }
-
 
     static class StatBar extends JComponent {
         private final int statMax;
@@ -1096,7 +1016,6 @@ public class JTeamEditor extends JPanel {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int width = Math.max(2, (int) (getWidth() * Math.min(value, statMax) / (double) statMax));
-            // TODO rename
             float hue = Math.min(value, statMax) / (float) statMax * 0.33f;
             g2.setColor(Color.getHSBColor(hue, 0.45f, 0.85f));
             g2.fillRoundRect(0, 1, width, getHeight() - 2, 4, 4);

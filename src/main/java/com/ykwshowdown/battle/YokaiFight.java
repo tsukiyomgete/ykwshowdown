@@ -8,7 +8,7 @@ public class YokaiFight {
     private String _nomYokai;
     private String _surnomYokai;
 
-    private double[] _resistances;   // feu, glace, terre, foudre, eau, vent
+    private double[] _resistances;
     private int _attackId;
     private int _techniqueId;
     private Talent _talent;
@@ -33,7 +33,6 @@ public class YokaiFight {
     private float _inspiritBoost;
 
     // TODO : champs a ajouter pour le combat : attente (file des tours), jaugeAme, envoutement + toursRestants,
-    //        resistances[6], tribu, niveaux de bonus/malus (-8..+8) pour For/Esp/Def/Vit, garde (boolean)
     private int _team;
 
     public YokaiFight(String nomYokai, String surnomYokai, int pv, int atk, int spr, int def, int spe, int team) {

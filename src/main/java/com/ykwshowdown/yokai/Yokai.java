@@ -1,11 +1,6 @@
 package com.ykwshowdown.yokai;
 
-/**
- * Le yokai de base, son équivalent est le species dans la bdd
- *
- */
 public class Yokai {
-
 
     public static final int FIRE = 0;
     public static final int ICE = 1;
@@ -23,31 +18,30 @@ public class Yokai {
     Stat statInit;
     Stat statEnd;
 
-    double[] resistances;   //Array des resistances
+    double[] resistances;
 
     int attackId;
     int techniqueId;
-    Integer inspiritId;     // null possible
-    Integer ultimateId;     // null possible
-
+    Integer inspiritId;
+    Integer ultimateId;
 
     int _baseAttackPerC;
     int _baseTechniquePerC;
     int _baseInspiritPerC;
     int _baseGuardPerC;
 
-    // Hors base de donnees
     Tier yokaiTier;
     face_icon faceYoKai;
     boolean isLegendary;
     String talent;
     double chanceOfBeingInspirited;
+    String modelId;
 
     public Yokai(int id, int idMedaillum,String nom, char rang, String tribu,
             Stat statMin, Stat statMax,
             double[] resistances,
             int attackId, int techniqueId, Integer inspiritId, Integer ultimateId,
-            int probAttack, int probTechnique, int probInspirit, int probGuard) {
+            int probAttack, int probTechnique, int probInspirit, int probGuard, String modelId) {
         this.id = id;
         this.nom = nom;
         this.rangYokai = rang;
@@ -65,19 +59,27 @@ public class Yokai {
         this._baseGuardPerC = probGuard;
         this.yokaiTier = Tier.NU;
         this.idMedaillum = idMedaillum;
+        this.modelId = modelId;
     }
 
     public int GetID() {
         return id;
     }
 
-    /** Position of the medal in face_icon.png, null if the Yo-kai has none. */
     public face_icon getFaceIcon() {
         return faceYoKai;
     }
 
     public void setFaceIcon(face_icon faceYoKai) {
         this.faceYoKai = faceYoKai;
+    }
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
     }
 
     public String GetName() {
@@ -119,7 +121,6 @@ public class Yokai {
     public double[] getResistances() {
         return resistances;
     }
-
 
     public double getResistance(int element) {
         return resistances[element];

@@ -12,10 +12,6 @@ import com.ykwshowdown.chat.Message;
 import com.ykwshowdown.chat.ModeleChat;
 import com.ykwshowdown.chat.ObservateurChat;
 
-/**
- * Fenetre laterale de chat. Vue seulement : elle affiche le ModeleChat
- * et se redessine quand il la previent (ObservateurChat).
- */
 public class JChatPanel extends JPanel implements ObservateurChat {
 
     public static final String ACTION_ENVOYER = "CHAT_ENVOYER";
@@ -34,7 +30,6 @@ public class JChatPanel extends JPanel implements ObservateurChat {
         setBackground(new Color(0xF4F2F8));
         setBorder(new MatteBorder(0, 1, 0, 0, new Color(0xC9C2D6)));
 
-        // --- En-tete ---
         JLabel titre = new JLabel("Chat");
         titre.setFont(new Font("Verdana", Font.BOLD, 16));
         titre.setForeground(Color.WHITE);
@@ -43,7 +38,6 @@ public class JChatPanel extends JPanel implements ObservateurChat {
         entete.setBackground(new Color(0x4D7FB8));
         entete.add(titre, BorderLayout.WEST);
 
-        // --- Messages ---
         zoneMessages = new JTextArea();
         zoneMessages.setEditable(false);
         zoneMessages.setLineWrap(true);
@@ -54,10 +48,9 @@ public class JChatPanel extends JPanel implements ObservateurChat {
         JScrollPane defilement = new JScrollPane(zoneMessages);
         defilement.setBorder(BorderFactory.createEmptyBorder());
 
-        // --- Saisie ---
         champSaisie = new JTextField();
         champSaisie.setFont(new Font("Verdana", Font.PLAIN, 13));
-        champSaisie.setActionCommand(ACTION_ENVOYER);       // Entree = envoyer
+        champSaisie.setActionCommand(ACTION_ENVOYER);
         boutonEnvoyer = new JButton("Envoyer");
         boutonEnvoyer.setActionCommand(ACTION_ENVOYER);
         JPanel saisie = new JPanel(new BorderLayout(6, 0));
@@ -70,10 +63,9 @@ public class JChatPanel extends JPanel implements ObservateurChat {
         add(defilement, BorderLayout.CENTER);
         add(saisie, BorderLayout.SOUTH);
 
-        modele.addObservateur(this);   // Envoyer quand les messages changent
+        modele.addObservateur(this);
     }
 
-    /** Appelee par le modele : relit tous les messages et redessine. */
     @Override
     public void chatModifie() {
         StringBuilder sb = new StringBuilder();
@@ -85,7 +77,6 @@ public class JChatPanel extends JPanel implements ObservateurChat {
         zoneMessages.setCaretPosition(zoneMessages.getDocument().getLength());
     }
 
-    /** Renvoie le texte saisi et vide le champ. */
     public String prendreSaisie() {
         String texte = champSaisie.getText().trim();
         champSaisie.setText("");

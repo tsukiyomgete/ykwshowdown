@@ -1,6 +1,8 @@
 package com.ykwshowdown.menu;
 
 import java.util.*;
+
+import com.ykwshowdown.reseau.ConnexionServeur;
 import com.ykwshowdown.yokai.*;
 import com.ykwshowdown.user.*;
 
@@ -10,13 +12,24 @@ public class WatchList {
     ArrayList<WatchBuilder> yourTeam;
     int nbTeam;
     User userActuel;
+    ConnexionServeur serveur;
 
     Scanner sc = new Scanner(System.in);
 
-    public WatchList() {
+    public WatchList(ConnexionServeur server) {
         yourTeam = new ArrayList<WatchBuilder>();
         nbTeam = 0;
+        this.serveur = server;
+    }
+    public void addTeam(WatchBuilder team) {
+        if (yourTeam.size() < MAXTEAM) {
+            yourTeam.add(team);
+            nbTeam = yourTeam.size();
+        }
+    }
 
+    public ConnexionServeur getServer(){
+        return this.serveur;
     }
 
     public void menu(User userx) {
@@ -52,8 +65,6 @@ public class WatchList {
 
     }
 
-    // ===== TODO rename =====
-
     public int getTeamCount() {
         return yourTeam.size();
     }
@@ -62,7 +73,6 @@ public class WatchList {
         return yourTeam.get(index);
     }
 
-    /** TODO rename */
     public WatchBuilder newTeam() {
         if (yourTeam.size() >= MAXTEAM) {
             return null;
@@ -78,7 +88,6 @@ public class WatchList {
         return team;
     }
 
-    /** TODO rename */
     public WatchBuilder copyTeam(int index) {
         if (yourTeam.size() >= MAXTEAM) {
             return null;
@@ -93,6 +102,14 @@ public class WatchList {
     public void removeTeam(int index) {
         yourTeam.remove(index);
         nbTeam = yourTeam.size();
+    }
+
+    public void saveTeamDataBase(int index){
+        WatchBuilder saveTeam = getTeam(index);
+        if(saveTeam.isTeamValid()){
+            String saveTeamStr = saveTeam.toString();
+        }
+
     }
 
     private boolean hasTeamNamed(String name) {
@@ -125,7 +142,6 @@ public class WatchList {
             yourTeam.add(nbTeam, new WatchBuilder(nomTeam));
             nbTeam++;
             System.out.println("L'équipe " + nomTeam + " a été crée! ");
-            // ← supprime printTeam() ici
         } else {
             System.out.println("Nombre maximum d'équipe atteintes !");
         }

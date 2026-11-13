@@ -8,6 +8,7 @@ import com.ykwshowdown.yokai.Yokai;
 import com.ykwshowdown.yokai.YokaiGeneral;
 
 public class WatchBuilder {
+    int teamId;
     String nomTeam;
     final int MAXYOKAI = 6;
     YokaiGeneral[] WatchTeam;
@@ -75,7 +76,6 @@ public class WatchBuilder {
         }
     }
 
-    /** TODO rename */
     public String getValidationMessage() {
         String raisons = "";
         if (formatTeam == null) {
@@ -105,15 +105,15 @@ public class WatchBuilder {
     }
 
     public String toString() {
-        String result = "Nom de l'equipe : " + nomTeam + "\n";
+        String result = "Team Name : " + nomTeam + "\n";
         if (formatTeam != null) {
             result += "Format : " + formatTeam.getTier() + "\n";
         }
         for (int i = 0; i < WatchTeam.length; i++) {
             if (WatchTeam[i] == null) {
-                result += "Rang " + (i + 1) + " : (vide)\n";
+                result += "Rank " + (i + 1) + " : (vide)\n";
             } else {
-                result += "Rang numero : " + (i + 1) + "\n";
+                result += "Slot place : " + (i + 1) + "\n";
                 result += WatchTeam[i].GetName() + "\n";
                 result += "Lvl : " + WatchTeam[i].GetLevel() + "\n";
                 result += "IVS : ";
@@ -133,11 +133,6 @@ public class WatchBuilder {
         return result;
     }
 
-    /**
-     * Reads a team written by toString(). Each Yo-kai block:
-     * "Rang numero : n", name, "Lvl : x", "IVS : ...", "Attitude : ...", "Equipment : ..." (optional, old exports
-     * don't have it), then an empty line. "Rang n : (vide)" lines are skipped.
-     */
     public void importTeam(String teamStr) {
         String[] ligne = teamStr.split("\n");
         String[] ligneEquipe = ligne[0].split(" : ", 2);
@@ -149,13 +144,13 @@ public class WatchBuilder {
                 try {
                     this.formatTeam = Tier.valueOf(valeur(ligne[l]));
                 } catch (IllegalArgumentException e) {
-                    System.out.println("Format inconnu : " + valeur(ligne[l]));
+                    System.out.println("Unknown format : " + valeur(ligne[l]));
                 }
                 l++;
                 continue;
             }
-            if (!ligne[l].startsWith("Rang numero")) {
-                l++;   // empty line or "(vide)" slot
+            if (!ligne[l].startsWith("Slot place")) {
+                l++;
                 continue;
             }
             int rang = Integer.parseInt(valeur(ligne[l]));
@@ -185,7 +180,7 @@ public class WatchBuilder {
             YokaiGeneral yg = new YokaiGeneral();
             yg.addYokai(nomYokai);
             if (yg.GetYokai() == null) {
-                continue;   // unknown Yo-kai: slot left empty
+                continue;
             }
             yg.setLevel(level);
             yg.setIv(ivHP, ivSTR, ivSPR, ivDEF, ivSPE);
@@ -203,13 +198,10 @@ public class WatchBuilder {
         }
     }
 
-    /** Text after the first ":" of a line, trimmed ("Lvl : 60" -> "60"). */
     private static String valeur(String ligne) {
         int i = ligne.indexOf(':');
         return i < 0 ? ligne.trim() : ligne.substring(i + 1).trim();
     }
-
-    // ===== Customising a Yo-kai (rang = 1 to 6, like addYokai) =====
 
     private YokaiGeneral yokaiAuRang(int rang) {
         if (rang < 1 || rang > MAXYOKAI) {
@@ -221,32 +213,26 @@ public class WatchBuilder {
         return WatchTeam[rang - 1];
     }
 
-    /** Console version: asks the IV one by one. */
     public void setIV(int rang, String name) {
         yokaiAuRang(rang).setIV(name);
     }
 
-    /** IV by hand, throws IllegalArgumentException if HP/2 + STR + SPR + DEF + SPE > 40. */
     public void setIV(int rang, int hp, int str, int spr, int def, int spe) {
         yokaiAuRang(rang).setIv(hp, str, spr, def, spe);
     }
 
-    /** Random IV, like in the game. */
     public void generateIV(int rang) {
         yokaiAuRang(rang).generateIV();
     }
 
-    /** Returns false if the attitude doesn't exist. Empty name = no attitude. */
     public boolean setAttitude(int rang, String nomAttitude) {
         return yokaiAuRang(rang).setAttitude(nomAttitude);
     }
 
-    /** Returns false if the equipment doesn't exist. Empty name = no equipment. */
     public boolean setEquipment(int rang, String nomEquipement) {
         return yokaiAuRang(rang).setEquipment(nomEquipement);
     }
 
-    /** Recalculates the stats of the whole team. */
     public void updateStats() {
         for (YokaiGeneral yg : WatchTeam) {
             if (yg != null && yg.GetYokai() != null) {
@@ -263,13 +249,18 @@ public class WatchBuilder {
         return formatTeam;
     }
 
+    public int getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
+
     public void setTeamName(String nomTeam) {
         this.nomTeam = nomTeam == null ? "" : nomTeam.trim();
     }
 
-    // ===== TODO rename =====
-
-    /** TODO rename */
     public void setYokai(int rang, Yokai espece) {
         if (rang < 1 || rang > MAXYOKAI) {
             throw new IllegalArgumentException("Rang pas compris entre 1 et 6");
@@ -287,7 +278,6 @@ public class WatchBuilder {
         setYokai(rang, null);
     }
 
-    /** TODO rename */
     public void copyFrom(WatchBuilder autre) {
         this.nomTeam = autre.nomTeam;
         this.formatTeam = autre.formatTeam;
@@ -295,7 +285,6 @@ public class WatchBuilder {
         recompter();
     }
 
-    /** TODO rename */
     public WatchBuilder copy() {
         WatchBuilder copie = new WatchBuilder();
         copie.importTeam(this.toString());
@@ -311,6 +300,15 @@ public class WatchBuilder {
             }
         }
     }
+
+    public void putYokai(int rang, YokaiGeneral yg) {
+        if (rang < 1 || rang > MAXYOKAI) {
+            throw new IllegalArgumentException("Rang pas compris entre 1 et 6");
+        }
+        WatchTeam[rang - 1] = yg;
+        recompter();
+    }
+
 
     public String GetName(int rang) {
         return WatchTeam[rang].GetName();

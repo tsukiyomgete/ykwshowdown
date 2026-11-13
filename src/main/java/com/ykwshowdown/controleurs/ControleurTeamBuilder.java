@@ -1,6 +1,8 @@
 package com.ykwshowdown.controleurs;
 
+import com.google.gson.Gson;
 import com.ykwshowdown.VisualSwing.JTeamBuilder;
+import com.ykwshowdown.database.TeamDataTransfer;
 import com.ykwshowdown.menu.WatchBuilder;
 import com.ykwshowdown.menu.WatchList;
 
@@ -9,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/** TODO rename */
 public class ControleurTeamBuilder implements ActionListener {
 
     private final JTeamBuilder vue;
@@ -17,6 +18,7 @@ public class ControleurTeamBuilder implements ActionListener {
     private final TeamEditorController editeur;
     private final CardLayout cartes;
     private final JPanel conteneur;
+    private WatchBuilder equipeEnvoyee;
 
     public ControleurTeamBuilder(JTeamBuilder vue, WatchList teams, TeamEditorController editeur,
                                  CardLayout cartes, JPanel conteneur) {
@@ -30,12 +32,10 @@ public class ControleurTeamBuilder implements ActionListener {
         vue.showTeams(teams);
     }
 
-    /** TODO rename */
     public void refreshList() {
         vue.showTeams(teams);
     }
 
-    /** TODO rename */
     public void showList() {
         refreshList();
         cartes.show(conteneur, ControleurMenu.CARTE_EQUIPES);
@@ -69,10 +69,51 @@ public class ControleurTeamBuilder implements ActionListener {
                 teams.removeTeam(i);
                 refreshList();
             }
+        } else if(cmd.startsWith(JTeamBuilder.ACTION_SAVE_TEAM)){
+            int i = index(cmd, JTeamBuilder.ACTION_SAVE_TEAM);
+            if(vue.confirmSave(teams.getTeam(i).GetTeamName())){
+                if (teams.getServer() == null) {
+                    vue.showMessage("Hors ligne : impossible de sauvegarder.");
+                    return;
+                }
+                equipeEnvoyee = teams.getTeam(i);
+                TeamDataTransfer dto = new TeamDataTransfer(equipeEnvoyee);
+                String dtoJson = new Gson().toJson(dto);
+                teams.getServer().envoyer("/team/save/"+dtoJson);
+            }
         }
     }
 
-    /** TODO rename */
+    public void reponseServeur(String ligne) {
+        if (ligne.startsWith("/team/list/")) {
+            String json = ligne.substring("/team/list/".length());
+            TeamDataTransfer[] listeEquipe = new Gson().fromJson(json, TeamDataTransfer[].class);
+            if (listeEquipe != null) {
+                for (TeamDataTransfer dto : listeEquipe) {
+                    teams.addTeam(dto.toWatchBuilder());
+                }
+                refreshList();
+            }
+            return;
+        }
+        if (ligne.startsWith("/success/team/")) {
+            int id = Integer.parseInt(ligne.substring("/success/team/".length()));
+            if (equipeEnvoyee != null) {
+                equipeEnvoyee.setTeamId(id);
+                vue.showMessage("Equipe \"" + equipeEnvoyee.GetTeamName() + "\" sauvegardee.");
+            }
+            equipeEnvoyee = null;
+        } else if (ligne.startsWith("/error/team/")) {
+            String raison = ligne.substring("/error/team/".length());
+            if (raison.equals("invalid")) {
+                vue.showMessage("Equipe refusee par le serveur : elle n'est pas valide.");
+            } else {
+                vue.showMessage("Erreur du serveur pendant la sauvegarde.");
+            }
+            equipeEnvoyee = null;
+        }
+    }
+
     private static int index(String cmd, String prefix) {
         return Integer.parseInt(cmd.substring(prefix.length()));
     }

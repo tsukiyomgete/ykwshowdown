@@ -13,14 +13,15 @@ import com.ykwshowdown.VisualSwing.StylizedButton.StyledButton;
 import com.ykwshowdown.menu.WatchBuilder;
 import com.ykwshowdown.menu.WatchList;
 import com.ykwshowdown.yokai.YokaiGeneral;
+import com.ykwshowdown.yokai.face_icon;
 
-/** TODO rename */
 public class JTeamBuilder extends JPanel {
 
     public static final String ACTION_CREE_EQUIPE = "CREATE_TEAM";
-    public static final String ACTION_EDIT_TEAM = "TEAM_EDIT_";       // TODO rename
+    public static final String ACTION_EDIT_TEAM = "TEAM_EDIT_";
     public static final String ACTION_COPY_TEAM = "TEAM_COPY_";
     public static final String ACTION_DELETE_TEAM = "TEAM_DELETE_";
+    public static final String ACTION_SAVE_TEAM = "TEAM_SAVE_";
 
     private static final Color BACKGROUND = new Color(240, 235, 245);
     private static final Color ROW_BACKGROUND = new Color(245, 245, 245);
@@ -28,7 +29,7 @@ public class JTeamBuilder extends JPanel {
     private static final Color MUTED_TEXT = new Color(0x777777);
     private static final Font VERDANA = new Font("Verdana", Font.PLAIN, 12);
     private static final Font VERDANA_BOLD = new Font("Verdana", Font.BOLD, 12);
-    private static final int MEDAL = 44;   // TODO rename
+    private static final int MEDAL = face_icon.CELL;
 
     private final JLabel lblAllTeams = new JLabel("All teams (0)");
     private final StyledButton btnNewTeam = new StyledButton("+ New Team", 0xC987B8, 0xA84D96, 0x823B74);
@@ -36,9 +37,7 @@ public class JTeamBuilder extends JPanel {
     private final JPanel teamsListPanel = new JPanel();
 
     private ActionListener ecouteur;
-    private WatchList teams;   // TODO rename
-
-    // ===== TODO rename =====
+    private WatchList teams;
 
     public JTeamBuilder() {
         setBackground(BACKGROUND);
@@ -72,7 +71,7 @@ public class JTeamBuilder extends JPanel {
         teamsListPanel.setLayout(new BoxLayout(teamsListPanel, BoxLayout.Y_AXIS));
         teamsListPanel.setOpaque(false);
         teamsListPanel.setBorder(new EmptyBorder(0, 20, 20, 20));
-        JPanel holder = new JPanel(new BorderLayout());   // TODO rename
+        JPanel holder = new JPanel(new BorderLayout());
         holder.setOpaque(false);
         holder.add(teamsListPanel, BorderLayout.NORTH);
         JScrollPane scroll = new JScrollPane(holder);
@@ -85,7 +84,6 @@ public class JTeamBuilder extends JPanel {
 
         btnNewTeam.setActionCommand(ACTION_CREE_EQUIPE);
 
-        // TODO rename
         txtSearch.getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { redraw(); }
             public void removeUpdate(DocumentEvent e) { redraw(); }
@@ -95,16 +93,11 @@ public class JTeamBuilder extends JPanel {
         redraw();
     }
 
-    // ===== TODO rename =====
-
     public void setEcouteur(ActionListener ecouteur) {
         this.ecouteur = ecouteur;
         btnNewTeam.addActionListener(ecouteur);
     }
 
-    // ===== TODO rename =====
-
-    /** TODO rename */
     public void showTeams(WatchList teams) {
         this.teams = teams;
         redraw();
@@ -112,6 +105,10 @@ public class JTeamBuilder extends JPanel {
 
     public boolean confirmDelete(String teamName) {
         return JOptionPane.showConfirmDialog(this, "Delete the team \"" + teamName + "\" ?", "Delete",
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
+    }
+    public boolean confirmSave(String teamName){
+        return JOptionPane.showConfirmDialog(this, "Save \"" + teamName + "\" in the dataBase?", "Save",
                 JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
     }
 
@@ -146,7 +143,6 @@ public class JTeamBuilder extends JPanel {
         teamsListPanel.repaint();
     }
 
-    /** TODO rename */
     private static boolean matches(WatchBuilder team, String search) {
         if (team.GetTeamName().toLowerCase().contains(search)) {
             return true;
@@ -166,7 +162,6 @@ public class JTeamBuilder extends JPanel {
         row.setBorder(BorderFactory.createCompoundBorder(new LineBorder(BORDER_COLOR, 1, true), new EmptyBorder(6, 10, 6, 10)));
         row.setAlignmentX(LEFT_ALIGNMENT);
 
-        // TODO rename
         String format = team.getFormat() == null ? "" : "[YKW2 " + team.getFormat().getTier() + "] ";
         JLabel lblName = new JLabel(format + team.GetTeamName());
         lblName.setFont(VERDANA_BOLD);
@@ -183,13 +178,13 @@ public class JTeamBuilder extends JPanel {
         infoPanel.add(lblName, BorderLayout.NORTH);
         infoPanel.add(medals, BorderLayout.CENTER);
 
-        // TODO rename
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
         actionPanel.setOpaque(false);
         actionPanel.add(rowButton("Edit", ACTION_EDIT_TEAM + index, Color.BLACK));
         actionPanel.add(rowButton("Copy", ACTION_COPY_TEAM + index, Color.BLACK));
         actionPanel.add(rowButton("Delete", ACTION_DELETE_TEAM + index, new Color(0xC0392B)));
-        JPanel actionHolder = new JPanel(new GridBagLayout());   // TODO rename
+        actionPanel.add(rowButton("Save", ACTION_SAVE_TEAM + index, Color.GREEN));
+        JPanel actionHolder = new JPanel(new GridBagLayout());
         actionHolder.setOpaque(false);
         actionHolder.add(actionPanel);
 
@@ -199,7 +194,6 @@ public class JTeamBuilder extends JPanel {
         return row;
     }
 
-    /** TODO rename */
     private static JLabel medalLabel(YokaiGeneral yg) {
         boolean empty = yg == null || yg.GetYokai() == null;
         Icon icon = MedalSprites.icon(empty ? null : yg.GetYokai(), MEDAL);

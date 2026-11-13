@@ -30,8 +30,6 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
         }
     }
 
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         String cmd = e.getActionCommand();
@@ -68,7 +66,6 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
 
     }
 
-
     private String verifierSaisie(String pseudo, String mdp) {
         if (pseudo.isEmpty() || mdp.isEmpty()) {
             return "Remplis le pseudo et le mot de passe";
@@ -81,8 +78,6 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
         }
         return null;
     }
-
-
 
     public void messageRecu(String ligne) {
         if (ligne.startsWith("/data/")) {
@@ -101,6 +96,7 @@ public class ControleurLogin implements ActionListener, EcouteurServeur {
             case "/success/login":
             case "/success/signin":
                 serveur.setEcouteur(navigation);
+                serveur.envoyer("/team/all");
                 navigation.connexionReussie(pseudoEnCours);
                 break;
             case "/error/login":

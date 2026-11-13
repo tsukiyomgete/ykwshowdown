@@ -63,12 +63,10 @@ public class Main {
     }
 
     private static void lancer(ConnexionServeur serveur) {
-        // --- Modeles ---
-        WatchList equipes = new WatchList();   // TODO rename
+        WatchList equipes = new WatchList(serveur);
         ModeleChat modeleChat = new ModeleChat(serveur);
         modeleChat.ajouter(Message.maintenant("Systeme", "Bienvenue sur YKW Showdown !"));
 
-        // --- Vues ---
         JLogMenu login = new JLogMenu();
         JHomeMenu menu = new JHomeMenu(new HomeMenu(), modeleChat);
         JTeamBuilder teamBuilder = new JTeamBuilder();
@@ -79,7 +77,6 @@ public class Main {
         bientot.setFont(new Font("Verdana", Font.BOLD, 20));
         JEcranRetour ecranCombat = new JEcranRetour("Combat", bientot);
 
-        // --- Navigation par cartes ---
         CardLayout cartes = new CardLayout();
         JPanel conteneur = new JPanel(cartes);
         conteneur.add(login, ControleurMenu.CARTE_LOGSIGN);
@@ -88,18 +85,16 @@ public class Main {
         conteneur.add(ecranCombat, ControleurMenu.CARTE_COMBAT);
         conteneur.add(teamEditor, ControleurMenu.CARTE_EDITEUR);
 
-        // --- Controleurs ---
         ControleurMenu ctrlMenu = new ControleurMenu(cartes, conteneur, menu, modeleChat, ecranEquipes, ecranCombat, "Invite");
         TeamEditorController ctrlEditor = new TeamEditorController(teamEditor, cartes, conteneur);
         new ControleurLogin(login, ctrlMenu, ctrlEditor, serveur);
-        new ControleurTeamBuilder(teamBuilder, equipes, ctrlEditor, cartes, conteneur);
+        ControleurTeamBuilder ctrlTeamBuilder = new ControleurTeamBuilder(teamBuilder, equipes, ctrlEditor, cartes, conteneur);
+        ctrlMenu.setTeamBuilder(ctrlTeamBuilder);
         if (serveur != null) {
             serveur.envoyer("/data/all");
         }
 
-
-        ImageIcon icon = new ImageIcon("src/asset/gameIcon/icon.png");
-        // --- Fenetre ---
+        ImageIcon icon = new ImageIcon(Main.class.getResource("/asset/gameIcon/icon.png"));
         JFrame frame = new JFrame("YKW Showdown");
         frame.setContentPane(conteneur);
         frame.setSize(1200, 750);

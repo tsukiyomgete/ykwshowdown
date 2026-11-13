@@ -6,9 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-/**
- * Enveloppe un ecran (equipes, combat...) avec une barre du haut et un bouton "Retour au menu".
- */
 public class JEcranRetour extends JPanel {
 
     public static final String ACTION_RETOUR = "RETOUR_MENU";

@@ -6,13 +6,8 @@ import com.ykwshowdown.battle.YokaiFight;
 import com.ykwshowdown.database.DataBase;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Yo-kai customised by the player: species + level + IV + attitude + equipment + gym.
- * The real stats (StatActu) are recalculated automatically each time one of them changes.
- */
 public class YokaiGeneral {
 
-    // algo 1 constants: the game computes in float, keep these exact values
     private static final float ONE_OVER_98 = 0.010204081f;
     private static final float ONE_OVER_198 = 0.0050505050f;
     public static final int DEFAULT_LEVEL = 60;
@@ -32,8 +27,6 @@ public class YokaiGeneral {
     int TrainingCount;
     IV ivYokai;
     SportsClub SportsClub;
-
-    // ===== Construction =====
 
     public YokaiGeneral() {
         yokai = null;
@@ -67,8 +60,6 @@ public class YokaiGeneral {
         updateStats();
     }
 
-    // ===== Species =====
-
     public void addYokai(String str) {
         Yokai y = rechercheYokai(str);
         if (y != null) {
@@ -91,8 +82,6 @@ public class YokaiGeneral {
         return y;
     }
 
-    // ===== Level =====
-
     public void setLevel(int level) {
         if (level < 1 || level > 99) {
             throw new IllegalArgumentException("Impossible, le niveau doit etre entre 1 et 99");
@@ -105,30 +94,22 @@ public class YokaiGeneral {
         setLevel(Integer.parseInt(str.trim()));
     }
 
-    // ===== IV =====
-
-    /** Sets the IV by hand, throws IllegalArgumentException if HP/2 + STR + SPR + DEF + SPE > 40. */
     public void setIv(int ivHP, int ivSTR, int ivSPR, int ivDEF, int ivSPE) {
         ivYokai.setIV(ivHP, ivSTR, ivSPR, ivDEF, ivSPE);
         updateStats();
     }
 
-    /** Random IV, like in the game. */
     public void generateIV() {
         ivYokai.GenerateIV();
         updateStats();
     }
 
-    /** Console version: asks the IV one by one. */
     public void setIV(String name) {
         System.out.println("On va choisir les IV de " + name);
         ivYokai.setIV();
         updateStats();
     }
 
-    // ===== Attitude =====
-
-    /** Looks for the attitude by name in the data from the server. Returns false if unknown. */
     public boolean setAttitude(String name) {
         if (name == null || name.isBlank()) {
             attitudeYoKai = null;
@@ -144,9 +125,6 @@ public class YokaiGeneral {
         return true;
     }
 
-    // ===== Equipment =====
-
-    /** Looks for the equipment by name in the data from the server. Returns false if unknown. */
     public boolean setEquipment(String name) {
         if (name == null || name.isBlank()) {
             ItemYokai = null;
@@ -163,23 +141,16 @@ public class YokaiGeneral {
         return true;
     }
 
-    // ===== Stats (algo 1) =====
-
-    /** Recalculates StatActu with everything: IV, attitude, gym and equipment. */
     public void updateStats() {
         StatActu = calculateStats(true);
     }
 
-    /**
-     * Algo 1 of Algorithmes_combat.md.
-     * withBonuses = false : only the species, the level and the IV (no attitude, gym or equipment).
-     */
     public Stat calculateStats(boolean withBonuses) {
         if (yokai == null || level < 1) {
             return new Stat(0, 0, 0, 0, 0);
         }
-        Stat min = yokai.getStatA();   // level 1
-        Stat max = yokai.getStatB();   // level 99
+        Stat min = yokai.getStatA();
+        Stat max = yokai.getStatB();
 
         int[] minS = {min.HP, min.STR, min.SPR, min.DEF, min.SPE};
         int[] maxS = {max.HP, max.STR, max.SPR, max.DEF, max.SPE};
@@ -208,8 +179,8 @@ public class YokaiGeneral {
             s = s + (maxS[i] + iv[i] - minS[i]) * ONE_OVER_98 * (level - 1);
             s = s + ev[i] * (1 + level * ONE_OVER_198);
             s = s + gym[i];
-            int stat = Math.max(1, Math.min(999, (int) s));   // truncated, between 1 and 999
-            result[i] = Math.max(1, stat + equip[i]);           // equipment added after, minimum 1
+            int stat = Math.max(1, Math.min(999, (int) s));
+            result[i] = Math.max(1, stat + equip[i]);
         }
         return new Stat(result[0], result[1], result[2], result[3], result[4]);
     }
@@ -226,16 +197,12 @@ public class YokaiGeneral {
         return StatActu;
     }
 
-    // ===== Nickname =====
-
     public static final int MAX_NICKNAME = 26;
 
-    /** TODO rename */
     public String GetNickname() {
         return surnom == null || surnom.equals("???") ? "" : surnom;
     }
 
-    /** TODO rename */
     public void setNickname(String nickname) {
         String n = nickname == null ? "" : nickname.trim();
         if (n.length() > MAX_NICKNAME) {
@@ -256,8 +223,6 @@ public class YokaiGeneral {
         }
     }
 
-    // ===== Battle =====
-
     public YokaiFight toYokaiFight(int teamNumber) {
         updateStats();
         return new YokaiFight(
@@ -269,8 +234,6 @@ public class YokaiGeneral {
                 this.GetSPE(),
                 teamNumber);
     }
-
-    // ===== Getters =====
 
     public Yokai GetYokai() {
         return yokai;
@@ -312,7 +275,6 @@ public class YokaiGeneral {
         return this.attitudeYoKai;
     }
 
-    /** Attitude name, or "null" if none (used by the export). */
     public String GetAttitudeName() {
         return attitudeYoKai == null ? "null" : attitudeYoKai.getAttitude();
     }
@@ -321,7 +283,6 @@ public class YokaiGeneral {
         return ItemYokai;
     }
 
-    /** Equipment name, or "null" if none (used by the export). */
     public String GetEquipementName() {
         return ItemYokai == null || ItemYokai.GetName() == null ? "null" : ItemYokai.GetName();
     }

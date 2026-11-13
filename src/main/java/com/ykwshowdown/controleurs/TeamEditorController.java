@@ -11,7 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/** TODO rename */
 public class TeamEditorController implements ActionListener {
 
     private final JTeamEditor editor;
@@ -27,17 +26,14 @@ public class TeamEditorController implements ActionListener {
         editor.setListener(this);
     }
 
-    /** TODO rename */
     public void setTeamList(ControleurTeamBuilder teamList) {
         this.teamList = teamList;
     }
 
-    /** TODO rename */
     public void dataLoaded() {
         editor.fillLists();
     }
 
-    /** TODO rename */
     public void editTeam(WatchBuilder team) {
         this.team = team;
         editor.showTeam(team);
@@ -111,7 +107,7 @@ public class TeamEditorController implements ActionListener {
                 try {
                     yg.setIv(iv[0], iv[1], iv[2], iv[3], iv[4]);
                 } catch (IllegalArgumentException ex) {
-                    error = ex.getMessage();   // TODO rename
+                    error = ex.getMessage();
                 }
                 editor.refresh();
                 if (error != null) {
@@ -143,8 +139,6 @@ public class TeamEditorController implements ActionListener {
         }
     }
 
-    // ===== TODO rename =====
-
     private void chooseYokai() {
         if (editor.getSelectedSlot() < 0) {
             return;
@@ -158,7 +152,7 @@ public class TeamEditorController implements ActionListener {
             editor.setSheetMessage("Unknown Yo-kai: " + name);
             return;
         }
-        team.setYokai(rang(), species);   // TODO rename
+        team.setYokai(rang(), species);
         editor.refresh();
     }
 
@@ -167,7 +161,7 @@ public class TeamEditorController implements ActionListener {
         saveHeader();
         String text = editor.askImportExport(team.toString());
         if (text == null || text.trim().equals(team.toString().trim())) {
-            return;   // TODO rename
+            return;
         }
         try {
             WatchBuilder imported = new WatchBuilder();
@@ -179,14 +173,10 @@ public class TeamEditorController implements ActionListener {
         }
     }
 
-    // ===== TODO rename =====
-
-    /** TODO rename */
     private int rang() {
         return editor.getSelectedSlot() + 1;
     }
 
-    /** TODO rename */
     private YokaiGeneral selected() {
         int slot = editor.getSelectedSlot();
         YokaiGeneral yg = slot < 0 ? null : team.getYokaiIndex(slot);
@@ -197,7 +187,6 @@ public class TeamEditorController implements ActionListener {
         return yg;
     }
 
-    /** TODO rename */
     private void saveNickname() {
         int slot = editor.getSelectedSlot();
         if (slot < 0) {
@@ -209,7 +198,6 @@ public class TeamEditorController implements ActionListener {
         }
     }
 
-    /** TODO rename */
     private void saveHeader() {
         String name = editor.getTeamName().trim();
         team.setTeamName(name.isEmpty() ? "Untitled" : name);

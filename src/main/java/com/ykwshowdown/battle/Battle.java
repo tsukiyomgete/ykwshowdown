@@ -61,7 +61,6 @@ public class Battle {
 
     public void SetOrderingBattle() {
         // TODO : remplacer par une file d'attente (algo 5 "Ordre des tours") :
-        //        au debut, chaque Yo-kai de devant recoit une attente aleatoire tiree de la table de vitesse
     }
 
     public void triInsertionOrderingBattle(YokaiTeam yt) {
@@ -70,7 +69,6 @@ public class Battle {
 
     public void attackTurn() {
         // TODO : boucle du jeu (algo 5) : prendre le Yo-kai avec la plus petite attente, retirer son attente a tous les autres,
-        //        le faire agir (algo 7 "IA"), puis lui donner une nouvelle attente = attente(Vitesse) * 3
     }
 
     public YokaiFight getRandTarget(YokaiTeam enemyTeam) {
@@ -91,7 +89,7 @@ public class Battle {
             }
         }
 
-        YokaiTeam aliveTeam = new YokaiTeam(aliveYokai.size(), yt.getTeamNumber()); // ← passe le teamNumber
+        YokaiTeam aliveTeam = new YokaiTeam(aliveYokai.size(), yt.getTeamNumber());
 
         for (int j = 0; j < aliveYokai.size(); j++) {
             aliveTeam.setYokaiIndex(j, aliveYokai.get(j));
@@ -143,7 +141,7 @@ public class Battle {
     // TODO : apres une rotation, les Yo-kai qui arrivent devant recoivent une attente pleine (attente(Vitesse) * 3)
     // TODO : recalculer le bonus de tribu apres chaque rotation (algo 8)
     public void tournerRoue(YokaiTeam yt, boolean droite, int nbCrans) {
-        YokaiFight[] roue = new YokaiFight[6]; // tableau temporaire
+        YokaiFight[] roue = new YokaiFight[6];
         for (int i = 0; i < yt.getFrontRowSize(); i++) {
             roue[i] = yt.getYokaiFrontRowIndex(i);
         }
@@ -152,7 +150,7 @@ public class Battle {
         }
         if (droite) {
             for (int j = 0; j < nbCrans; j++) {
-                YokaiFight tempY = roue[roue.length - 1]; // sauvegarder le dernier
+                YokaiFight tempY = roue[roue.length - 1];
                 for (int i = roue.length - 1; i > 0; i--) {
                     roue[i] = roue[i - 1];
                 }
@@ -161,7 +159,7 @@ public class Battle {
         }
         if (!droite) {
             for (int j = 0; j < nbCrans; j++) {
-                YokaiFight tempY = roue[0]; // sauvegarder le dernier
+                YokaiFight tempY = roue[0];
                 for (int i = 0; i < roue.length - 1; i++) {
                     roue[i] = roue[i + 1];
                 }

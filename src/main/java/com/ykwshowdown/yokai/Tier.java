@@ -29,7 +29,6 @@ public enum Tier {
         return this;
     }
 
-    /** TODO rename */
     public boolean estAutoriseDans(Tier format)
     {
         return this.ordre >= format.ordre;

@@ -1,5 +1,7 @@
 package com.ykwshowdown.reseau;
 
+import com.ykwshowdown.menu.WatchBuilder;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,25 +10,12 @@ import java.net.Socket;
 
 import javax.swing.SwingUtilities;
 
-/**
- * Modele reseau : la connexion au serveur YKW Showdown (port 5001).
- *
- * Protocole (une ligne par requete, une ligne par reponse) :
- *   /signin/user/<pseudo>/passwd/<mdp>  -> /success/signin   ou /error/signin
- *   /login/user/<pseudo>/passwd/<mdp>   -> /success/login    ou /error/login
- *   requete mal formee                  -> /error/invalid
- *   commande inconnue                   -> /error/unknown
- *
- * Les methodes d'envoi ne lisent JAMAIS la reponse : un seul thread lit la socket
- * (demarrerEcoute) et transmet chaque ligne a l'ecouteur actuel, sur le thread Swing.
- */
 public class ConnexionServeur {
 
     private final Socket socket;
     private final BufferedReader lecteur;
     private final PrintWriter writer;
 
-    // Qui recoit les messages du serveur en ce moment (le login, puis le menu)
     private volatile EcouteurServeur ecouteur;
 
     public ConnexionServeur(String hote, int port) throws IOException {
@@ -36,12 +25,11 @@ public class ConnexionServeur {
         demarrerEcoute();
     }
 
-    /** Change le destinataire des messages du serveur. */
+
+
     public void setEcouteur(EcouteurServeur ecouteur) {
         this.ecouteur = ecouteur;
     }
-
-    // Requete avec envoie seulement
 
     public void signin(String pseudo, String mdp) {
         envoyer("/signin/user/" + pseudo + "/passwd/" + mdp);
@@ -62,8 +50,6 @@ public class ConnexionServeur {
         }
     }
 
-
-    /** L'endroit qui lit la socket. */
     private void demarrerEcoute() {
         Thread t = new Thread(() -> {
             try {
@@ -82,7 +68,6 @@ public class ConnexionServeur {
         t.start();
     }
 
-    /** Renvoie la ligne sur le thread Swing, a l'ecouteur actuel. */
     private void transmit(String ligne) {
         SwingUtilities.invokeLater(() -> {
             EcouteurServeur e = ecouteur;

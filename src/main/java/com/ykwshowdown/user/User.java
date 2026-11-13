@@ -47,7 +47,6 @@ public class User {
         lastLogged = joinedDate;
     }
 
-
     public static void setNbUser(int nbUser)
     {
         User.nbUser = nbUser;

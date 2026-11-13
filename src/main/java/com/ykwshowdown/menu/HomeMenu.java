@@ -17,7 +17,7 @@ public class HomeMenu {
 
     Scanner sc = new Scanner(System.in);
     String str;
-    private WatchList watchList = new WatchList();
+    //private WatchList watchList = new WatchList(server);
 
     public void menu() {
 
@@ -56,7 +56,7 @@ public class HomeMenu {
             if (choix == 1) {
                 if (userConnected.getEquippedTeam() == null) {
                     System.out.println("Please select a team");
-                    watchList.menu(userConnected);
+                    //watchList.menu(userConnected);
                     continue;
                 }
 
@@ -93,7 +93,7 @@ public class HomeMenu {
             }
 
             if (choix == 2) {
-                watchList.menu(userConnected);
+                //watchList.menu(userConnected);
             }
             if (choix == 3) {
                 System.out.println("(Tier Actuel - à implémenter)");
@@ -120,8 +120,6 @@ public class HomeMenu {
 
         return new User(strUser, strMdp);
     }
-
-
 
     public void delBaseDeDonnee() {
     }

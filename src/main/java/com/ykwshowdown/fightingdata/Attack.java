@@ -2,7 +2,6 @@ package com.ykwshowdown.fightingdata;
 
 import com.ykwshowdown.yokai.*;
 
-
 public abstract class Attack
 {
     protected int _idAttack;
@@ -47,6 +46,5 @@ public abstract class Attack
     {
         return _numberOfHit;
     }
-
 
 }

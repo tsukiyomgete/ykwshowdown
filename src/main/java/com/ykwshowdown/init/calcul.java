@@ -25,12 +25,10 @@ public class calcul {
 	public static int calculateDamage(YokaiFight sender, YokaiFight target) {
 		// TODO : refaire avec la vraie formule de YKW2 (algo 4 "Degats" dans Algorithmes_combat.md)
 		// TODO : choisir la formule selon le TYPE de commande (attaque = Force, technique = Esprit),
-		//        pas selon la plus grande stat entre Force et Esprit
 		// TODO : gerer le nombre de coups n, le critique, la garde, la resistance de la cible, l'alea
 		// TODO : borner entre 1 et 999
 		return 0;
 	}
-
 
 	public void calculDegat() {
 		// TODO : ancienne version console de la formule, a supprimer quand calculateDamage sera fait
@@ -42,12 +40,10 @@ public class calcul {
 		return 1;
 	}
 
-	/** Stats without attitude, gym or equipment (algo 1). The formula is in YokaiGeneral. */
 	public static Stat calculStatsUncorrected(YokaiGeneral yg) {
 		return yg.calculateStats(false);
 	}
 
-	/** Full stats: IV + attitude + gym + equipment (algo 1). The formula is in YokaiGeneral. */
 	public static Stat calculStatsCorrected(YokaiGeneral yg) {
 		return yg.calculateStats(true);
 	}

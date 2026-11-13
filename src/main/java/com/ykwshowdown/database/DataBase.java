@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.annotations.SerializedName;
+import com.ykwshowdown.reseau.ConnexionServeur;
 import com.ykwshowdown.user.User;
 import com.ykwshowdown.yokai.*;
 import com.ykwshowdown.fightingdata.*;
@@ -40,7 +41,7 @@ public class DataBase {
     public static class RawYokai{
         @SerializedName("id") int yokaiId;
         @SerializedName("medallium") int idMedallium;
-        @SerializedName("face_x") Integer faceX;    // null if no medal in face_icon.png
+        @SerializedName("face_x") Integer faceX;
         @SerializedName("face_y") Integer faceY;
         @SerializedName("name") String yokaiName;
         @SerializedName("tribe") String yokaiTribe;
@@ -72,6 +73,7 @@ public class DataBase {
         int prob_technique;
         @SerializedName("prob_inspirit") int probInspirit;
         int prob_guard;
+        @SerializedName("model_id") String modelId;
 
         public RawYokai(int yokaiId, int idMedallium,String yokaiName, String yokaiTribe, String yokaiRank,
                         int hpMin, int strMin, int sprMin, int defMin, int spdMin,
@@ -79,7 +81,7 @@ public class DataBase {
                         double res_fire, double resIce, double res_earth,
                         double res_lightning, double res_water, double res_wind,
                         int attackId, int techniqueId, Integer inspiritId, Integer ultimateId,
-                        int prob_attack, int prob_technique, int probInspirit, int prob_guard) {
+                        int prob_attack, int prob_technique, int probInspirit, int prob_guard, String modelId) {
             this.yokaiId = yokaiId;
             this.idMedallium = idMedallium;
             this.yokaiName = yokaiName;
@@ -109,6 +111,7 @@ public class DataBase {
             this.prob_technique = prob_technique;
             this.probInspirit = probInspirit;
             this.prob_guard = prob_guard;
+            this.modelId = modelId;
         }
     }
     public static class RawAction {
@@ -218,9 +221,6 @@ public class DataBase {
         public String getEffect() { return effectEquipment; }
     }
 
-
-
-
     public static void loadServerData(String json) {
         System.out.println("JSON recu (debut) : " + json.substring(0, Math.min(300, json.length())));
         DataBase data = new Gson().fromJson(json, DataBase.class);
@@ -256,7 +256,7 @@ public class DataBase {
             Yokai yokai = new Yokai(y.yokaiId, y.idMedallium,y.yokaiName, y.yokaiRank.charAt(0), y.yokaiTribe,
                     statMin, statMax, res,
                     y.attackId, y.techniqueId, y.inspiritId, y.ultimateId,
-                    y.prob_attack, y.prob_technique, y.probInspirit, y.prob_guard);
+                    y.prob_attack, y.prob_technique, y.probInspirit, y.prob_guard, y.modelId);
             if (y.faceX != null && y.faceY != null) {
                 yokai.setFaceIcon(new face_icon(y.faceX, y.faceY));
             }
@@ -303,7 +303,6 @@ public class DataBase {
 
     }
 
-
     public static RawEquipment getEquipment(String nom) {
         for (RawEquipment e : mapOfEquipment.values()) {
             if (e.getName().equalsIgnoreCase(nom)) {
@@ -339,6 +338,8 @@ public class DataBase {
         return null;
     }
 
+
+
     public static boolean getMdp(String username, String password){
         return false;
     }
@@ -346,8 +347,5 @@ public class DataBase {
     public static void setDate(User userTest, Date loggedDate) throws Exception {
 
     }
-
-
-
 
 }

@@ -13,9 +13,6 @@ import com.ykwshowdown.chat.Message;
 import com.ykwshowdown.chat.ModeleChat;
 import com.ykwshowdown.reseau.EcouteurServeur;
 
-/**
- * Controleur de navigation : menu <-> equipes <-> combat, et envoi du chat.
- */
 public class ControleurMenu implements ActionListener, EcouteurServeur {
 
     public static final String CARTE_LOGSIGN = "loginSignIn";
@@ -24,12 +21,12 @@ public class ControleurMenu implements ActionListener, EcouteurServeur {
     public static final String CARTE_COMBAT  = "combat";
     public static final String CARTE_EDITEUR = "editeur";
 
-
     private CardLayout cartes;
     private JPanel conteneur;
     private JHomeMenu menu;
     private ModeleChat modeleChat;
     private String pseudo;
+    private ControleurTeamBuilder teamBuilder;
 
     public ControleurMenu(CardLayout cartes, JPanel conteneur, JHomeMenu menu, ModeleChat modeleChat,
                           JEcranRetour ecranEquipes, JEcranRetour ecranCombat, String pseudo) {
@@ -44,6 +41,9 @@ public class ControleurMenu implements ActionListener, EcouteurServeur {
         ecranCombat.setEcouteur(this);
     }
 
+    public void setTeamBuilder(ControleurTeamBuilder teamBuilder) {
+        this.teamBuilder = teamBuilder;
+    }
 
     public void connexionReussie(String pseudoConnecte) {
         this.pseudo = pseudoConnecte;
@@ -52,12 +52,17 @@ public class ControleurMenu implements ActionListener, EcouteurServeur {
         cartes.show(conteneur, CARTE_MENU);
     }
 
-
     
     @Override
     public void messageRecu(String ligne) {
         if (modeleChat.recevoir(ligne)) {
-            return;                                            // /chat/... ou /info/...
+            return;
+        }
+        if (ligne.startsWith("/success/team/") || ligne.startsWith("/error/team/") || ligne.startsWith("/team/list/")) {
+            if (teamBuilder != null) {
+                teamBuilder.reponseServeur(ligne);
+            }
+            return;
         }
         if (ligne.startsWith("/error/")) {
             modeleChat.ajouter(Message.maintenant("Systeme", "Erreur : " + ligne.substring("/error/".length())));
@@ -75,14 +80,13 @@ public class ControleurMenu implements ActionListener, EcouteurServeur {
                 System.out.println("Annulation de requete matchmaking");
                 menu.changeBattleButtonClassic();
             }
-            //cartes.show(conteneur, CARTE_COMBAT);
         } else if (cmd.equals(JHomeMenu.ACTION_EQUIPES)) {
             cartes.show(conteneur, CARTE_EQUIPES);
         } else if (cmd.equals(JEcranRetour.ACTION_RETOUR)) {
             cartes.show(conteneur, CARTE_MENU);
         } else if (cmd.equals(JChatPanel.ACTION_ENVOYER)) {
             String texte = menu.getChat().prendreSaisie();
-            modeleChat.envoyer(texte);   // le message s'affichera quand le serveur le renverra
+            modeleChat.envoyer(texte);
         }
     }
 }

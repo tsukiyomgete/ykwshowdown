@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-
 public class JLogMenu extends JPanel {
     public static final String ACTION_LOG  = "LOGIN_BUTTON";
     public static final String ACTION_SIGN = "logIn_BUTTON";
@@ -21,36 +20,30 @@ public class JLogMenu extends JPanel {
         setLayout(new BorderLayout());
         setBackground(new Color(240, 235, 245));
 
-        //Titre
         JLabel title = new JLabel("Connexion", SwingConstants.LEFT);
         title.setFont(new Font("Arial", Font.BOLD, 22));
         add(title, BorderLayout.NORTH);
-        // Form
         JPanel form = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
 
-        //Username
         c.gridx = 0; c.gridy = 0; c.anchor = GridBagConstraints.LINE_END;
         form.add(new JLabel("Username:"), c);
         c.gridx = 1; c.anchor = GridBagConstraints.LINE_START;
         form.add(usernameInputField, c);
-        //Password
         c.gridx = 0; c.gridy = 1; c.anchor = GridBagConstraints.LINE_END;
         form.add(new JLabel("Password:"), c);
         c.gridx = 1; c.anchor = GridBagConstraints.LINE_START;
         form.add(passwordInputField, c);
 
-        //Panel pour le formulaire et mess de statut
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(form, BorderLayout.WEST);
         centerPanel.add(message, BorderLayout.SOUTH);
         add(centerPanel, BorderLayout.CENTER);
 
-
         logIn.setActionCommand(ACTION_LOG);
         signIn.setActionCommand(ACTION_SIGN);
-        passwordInputField.setActionCommand(ACTION_LOG);   // Entree dans le mot de passe = Sign in
+        passwordInputField.setActionCommand(ACTION_LOG);
 
         JPanel actionsContainer = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         actionsContainer.add(signIn);

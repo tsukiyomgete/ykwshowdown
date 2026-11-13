@@ -24,7 +24,6 @@ public class BackgroundPanel extends JPanel {
         g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
         g2.setColor(backgroundColor);
 
-        // ← clip arrondi pour couper les coins
         g2.setClip(new java.awt.geom.RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), arc, arc));
         g2.fillRoundRect(0, 0, getWidth(), getHeight(), arc, arc);
 

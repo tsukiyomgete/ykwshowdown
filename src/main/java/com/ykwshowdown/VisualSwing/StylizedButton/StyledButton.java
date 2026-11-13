@@ -18,7 +18,7 @@ public class StyledButton extends JButton {
         setContentAreaFilled(false);
         setFocusPainted(false);
         setOpaque(false);
-        setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15)); // padding
+        setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         setForeground(Color.WHITE);
         setHorizontalAlignment(SwingConstants.CENTER);
         setPreferredSize(new Dimension(160, 55));
@@ -57,7 +57,6 @@ public class StyledButton extends JButton {
 
     int arc = 10;
 
-    // ← clip arrondi
     g2.setClip(new java.awt.geom.RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), arc, arc));
 
     Color top    = new Color(topHex);

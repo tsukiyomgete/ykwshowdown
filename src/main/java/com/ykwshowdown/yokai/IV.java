@@ -3,15 +3,14 @@ package com.ykwshowdown.yokai;
 import java.util.Random;
 import java.util.Scanner;
 
-/**
- * IV of a Yo-kai (algo 1 of Algorithmes_combat.md).
- * Rule of the game: HP/2 + STR + SPR + DEF + SPE <= 40, no limit per stat.
- * HP is stored with its real value (not HP/2), and it always goes up by 2, so it is even.
- */
 public class IV {
 
     public static final int MAXIVPOINTS = 40;
     static final int MINIV = 0;
+
+    public static final int MIN_IV_POINTS = 3;
+    public static final int MAX_IV_POINTS_PER_STAT = 16;
+
     private static final Random RANDOM = new Random();
 
     int HP;
@@ -33,7 +32,6 @@ public class IV {
         setIV(HP, STR, SPR, DEF, SPE);
     }
 
-    /** Points used: HP counts for half. */
     public static int pointsUsed(int hp, int str, int spr, int def, int spe) {
         return hp / 2 + str + spr + def + spe;
     }
@@ -46,10 +44,15 @@ public class IV {
         return MAXIVPOINTS - getPointsUsed();
     }
 
-    /** Returns null if the IV are valid, otherwise the reason. */
     public static String checkIV(int hp, int str, int spr, int def, int spe) {
         if (hp < MINIV || str < MINIV || spr < MINIV || def < MINIV || spe < MINIV) {
             return "Les IV ne peuvent pas etre negatifs";
+        }
+        int[] points = {hp / 2, str, spr, def, spe};
+        for (int p : points) {
+            if (p < MIN_IV_POINTS || p > MAX_IV_POINTS_PER_STAT) {
+                return "Chaque stat doit avoir entre 3 et 16 points (6 à 32 pour HP)";
+            }
         }
         if (hp % 2 != 0) {
             return "Les IV de HP vont de 2 en 2 (valeur paire)";
@@ -60,7 +63,6 @@ public class IV {
         return null;
     }
 
-    /** Sets the 5 IV, throws IllegalArgumentException if they break the rules. */
     public void setIV(int hp, int str, int spr, int def, int spe) {
         String error = checkIV(hp, str, spr, def, spe);
         if (error != null) {
@@ -73,21 +75,21 @@ public class IV {
         this.SPE = spe;
     }
 
-    /** Generation of the game: 40 draws, each draw picks one of the 5 stats, +2 for HP, +1 otherwise. */
     public void GenerateIV() {
-        int[] iv = new int[5];
-        for (int i = 0; i < MAXIVPOINTS; i++) {
-            int stat = RANDOM.nextInt(5);
-            if (stat == 0) {
-                iv[0] += 2;
-            } else {
-                iv[stat] += 1;
-            }
+        int[] points = new int[5];
+        for (int i = 0; i < 5; i++) {
+            points[i] = MIN_IV_POINTS;
         }
-        setIV(iv[0], iv[1], iv[2], iv[3], iv[4]);
+        for (int i = 5 * MIN_IV_POINTS; i < MAXIVPOINTS; i++) {
+            int stat;
+            do {
+                stat = RANDOM.nextInt(5);
+            } while (points[stat] >= MAX_IV_POINTS_PER_STAT);
+            points[stat]++;
+        }
+        setIV(points[0] * 2, points[1], points[2], points[3], points[4]);
     }
 
-    /** Console version: asks the 5 values and checks the total. */
     public void setIV() {
         int hp, str, spr, def, spe;
         String error;

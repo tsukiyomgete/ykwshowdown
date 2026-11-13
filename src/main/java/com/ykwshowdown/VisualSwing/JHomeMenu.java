@@ -10,9 +10,6 @@ import com.ykwshowdown.VisualSwing.StylizedButton.StyledButton;
 import com.ykwshowdown.chat.ModeleChat;
 import com.ykwshowdown.menu.HomeMenu;
 
-/**
- * Menu principal : boutons a gauche, chat a droite.
- */
 public class JHomeMenu extends JPanel {
 
     public static final String ACTION_COMBAT  = "MENU_COMBAT";
@@ -41,7 +38,6 @@ public class JHomeMenu extends JPanel {
         teamButton.setPreferredSize(new Dimension(240, 55));
         teamButton.setActionCommand(ACTION_EQUIPES);
 
-        // --- Colonne de boutons ---
         JLabel titre = new JLabel("YKW Showdown", SwingConstants.CENTER);
         titre.setFont(new Font("Verdana", Font.BOLD, 28));
         titre.setForeground(new Color(0x823B74));
@@ -60,7 +56,6 @@ public class JHomeMenu extends JPanel {
         colonne.add(fightPanel);
         colonne.add(teamPanel);
 
-        // Centre la colonne dans l'espace a gauche du chat
         JPanel centre = new JPanel(new GridBagLayout());
         centre.setOpaque(false);
         centre.add(colonne);
@@ -71,7 +66,6 @@ public class JHomeMenu extends JPanel {
         add(chat, BorderLayout.EAST);
     }
 
-    /** Branche le controleur sur tous les composants interactifs du menu. */
     public void setEcouteur(ActionListener ecouteur) {
         battleButton.addActionListener(ecouteur);
         teamButton.addActionListener(ecouteur);

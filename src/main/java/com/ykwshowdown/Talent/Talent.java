@@ -13,10 +13,8 @@ public abstract class Talent {
     
     
 
-    // Version pour les talents adjacents, optionnelle
     public void activate(YokaiFight holder, YokaiFight ally1, YokaiFight ally2)
     {
-        //nothing
     }
 
     public void showNomFamilleTalent() {
